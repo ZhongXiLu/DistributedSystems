@@ -33,14 +33,15 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     public boolean addUser(Integer id, String name, String password, Boolean isModerator) {
         if(!checkExists(id)) {
             ChatUser u = new ChatUser(id, name, password, isModerator);
-            em.persist(u);
+            em.persist(u);  // BUG: em is null
             return true;
         }
         return false;
     }
     
     private boolean checkExists(Integer id) {
-        Query q = em.createNamedQuery("ChatUser.findById");
+        Query q = em.createNamedQuery("ChatUser.findById"); // BUG: em is null
+        System.out.println("id: " + id);
         q.setParameter("id", id);
         return !(q.getResultList().isEmpty());
     }

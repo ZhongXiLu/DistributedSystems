@@ -25,7 +25,7 @@ and open the template in the editor.
                         <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="WebsiteServlet?link=login">Go back</a></div>
                     </div>  
                     <div class="panel-body" >
-                        <form id="signupform" class="form-horizontal" role="form" method="POST" action="./ChatUserServlet?action=register">
+                        <form id="signupform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet">
 
                             <div id="signupalert" style="display:none" class="alert alert-danger">
                                 <p>Error:</p>
@@ -36,27 +36,27 @@ and open the template in the editor.
                             <div class="form-group">
                                 <label for="username" class="col-md-3 control-label">Username</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="username">
+                                    <input id="username" type="text" class="form-control" name="username">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="password" class="col-md-3 control-label">Password</label>
                                 <div class="col-md-9">
-                                    <input type="password" class="form-control" name="password">
+                                    <input id="password" type="password" class="form-control" name="password">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="repassword" class="col-md-3 control-label">Re-enter Password</label>
                                 <div class="col-md-9">
-                                    <input type="password" class="form-control" name="repassword">
+                                    <input id="repassword" type="password" class="form-control" name="repassword">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Sign Up</button>
+                                    <button id="addUser" name="AddUser" class="btn btn-info">Sign Up</button>
                                 </div>
                             </div>
 

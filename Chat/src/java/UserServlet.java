@@ -18,8 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "ChatUserServlet", urlPatterns = {"/ChatUserServlet"})
 public class UserServlet extends HttpServlet {
 
-    private int _id;
-    private ChatUserFacade chatUserFacade;
+    private static int _id = 0;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,32 +32,22 @@ public class UserServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        if(request.getParameter("action") != null) {
-            request.setAttribute("action", request.getParameter("action"));
-        }
         
-        if(request.getParameter("action") != null) {
-            if(request.getAttribute("action").equals("login")) {
-                // check if user exists and log in
-                //request.getRequestDispatcher("login.jsp").forward(request, response);
-            } else if (request.getAttribute("action").equals("register")) {
-                // create new user and log in
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
-                String repassword = request.getParameter("repassword");
-                if(password == repassword) {
-                    int id = _id;
-                    _id++;
-                    boolean isModerator = false;    // TODO: make first user the moderator
-                    boolean success = chatUserFacade.addUser(id, username, password, isModerator);
-                    request.getRequestDispatcher("chat.jsp").forward(request, response);
-                } else {
-                    // return error: passwords do not match
-                    request.getRequestDispatcher("register.jsp").forward(request, response);
-                }
+        if(request.getMethod() == "POST") {
+            // create new user and log in
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String repassword = request.getParameter("repassword");
+            if(password.equals(repassword)) {
+                int id = _id;
+                _id++;
+                boolean isModerator = false;    // TODO: make first user the moderator
+                ChatUserFacade chatUserFacade = new ChatUserFacade();
+                boolean success = chatUserFacade.addUser(id, username, password, isModerator);
+                request.getRequestDispatcher("chat.jsp").forward(request, response);
             } else {
-                // To error page?
-                //request.getRequestDispatcher("index.jsp").forward(request, response);
+                // return error: passwords do not match
+                request.getRequestDispatcher("register.jsp").forward(request, response);
             }
         }
     }
