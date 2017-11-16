@@ -3,6 +3,9 @@
   <persistence-unit name="ChatPU" transaction-type="JTA">
     <jta-data-source>java:app/chat</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties/>
+    <properties>
+        <property name="javax.persistence.jdbc.user" value="APP"/>
+        <property name="javax.persistence.jdbc.password" value="APP"/>
+    </properties>
   </persistence-unit>
 </persistence>
