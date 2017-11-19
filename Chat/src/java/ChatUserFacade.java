@@ -41,7 +41,6 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     
     private boolean checkExists(Integer id) {
         Query q = em.createNamedQuery("ChatUser.findById"); // BUG: em is null
-        System.out.println("id: " + id);
         q.setParameter("id", id);
         return !(q.getResultList().isEmpty());
     }

@@ -5,6 +5,7 @@
  */
 
 import java.io.IOException;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ChatUserServlet", urlPatterns = {"/ChatUserServlet"})
 public class UserServlet extends HttpServlet {
+
+    @EJB
+    private ChatUserFacade chatUserFacade;
 
     private static int _id = 0;
     
@@ -42,7 +46,6 @@ public class UserServlet extends HttpServlet {
                 int id = _id;
                 _id++;
                 boolean isModerator = false;    // TODO: make first user the moderator
-                ChatUserFacade chatUserFacade = new ChatUserFacade();
                 boolean success = chatUserFacade.addUser(id, username, password, isModerator);
                 request.getRequestDispatcher("chat.jsp").forward(request, response);
             } else {
