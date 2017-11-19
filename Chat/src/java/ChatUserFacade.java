@@ -1,9 +1,11 @@
 
 import chat_user.ChatUser;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -33,15 +35,33 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     public boolean addUser(Integer id, String name, String password, Boolean isModerator) {
         if(!checkExists(id)) {
             ChatUser u = new ChatUser(id, name, password, isModerator);
-            em.persist(u);  // BUG: em is null
+            em.persist(u);
             return true;
         }
         return false;
     }
     
     private boolean checkExists(Integer id) {
-        Query q = em.createNamedQuery("ChatUser.findById"); // BUG: em is null
+        Query q = em.createNamedQuery("ChatUser.findById");
         q.setParameter("id", id);
         return !(q.getResultList().isEmpty());
+    }
+    
+    public boolean checkAccount(String username, String password) {
+        TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByName", ChatUser.class);
+        q.setParameter("name", username);
+        List<ChatUser> results = q.getResultList();
+        if(results.isEmpty() || results.size() > 1) {
+            // user doesnt exist (or for some reason there's more than one account linked to one name)
+            return false;
+        } else {
+            // check password
+            if(results.get(0).getPassword().equals(password)) {
+                return true;
+            } else {
+                return false;
+            }
+            
+        }
     }
 }

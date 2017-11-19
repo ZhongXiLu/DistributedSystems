@@ -25,7 +25,7 @@ and open the template in the editor.
                         <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="WebsiteServlet?link=login">Go back</a></div>
                     </div>  
                     <div class="panel-body" >
-                        <form id="signupform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet">
+                        <form id="signupform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet?action=register">
 
                             <div id="signupalert" style="display:none" class="alert alert-danger">
                                 <p>Error:</p>
