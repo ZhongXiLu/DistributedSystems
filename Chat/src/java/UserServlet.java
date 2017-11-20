@@ -42,39 +42,46 @@ public class UserServlet extends HttpServlet {
         }
         
         if (request.getParameter("action") != null) {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
             if (request.getAttribute("action").equals("register")) {
                 // create new user and log in
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
                 String repassword = request.getParameter("repassword");
                 if (password.equals(repassword)) {
                     int id = _id;
                     _id++;
                     boolean isModerator = false;    // TODO: make first user the moderator
                     boolean success = chatUserFacade.addUser(id, username, password, isModerator);
-                    ChatUser user = chatUserFacade.getChatUser(username);
-                    request.getSession().setAttribute("user", user);        // save user to current session
-                    request.getSession().setAttribute("username", user.getName());
-                    request.getRequestDispatcher("chat.jsp").forward(request, response);
+                    if(success) {
+                        ChatUser user = chatUserFacade.getChatUser(username);
+                        createSession(request, user);
+                        request.getRequestDispatcher("chat.jsp").forward(request, response);
+                    } else {
+                        request.setAttribute("errorMessage", "Username already exists");
+                        request.getRequestDispatcher("register.jsp").forward(request, response);
+                    }
+                    
                 } else {
-                    // TODO: return error: passwords do not match
+                    request.setAttribute("errorMessage", "Passwords do not match");
                     request.getRequestDispatcher("register.jsp").forward(request, response);
                 }
             } else if (request.getAttribute("action").equals("login")) {
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
                 boolean success = chatUserFacade.checkAccount(username, password);
                 if(success) {
                     ChatUser user = chatUserFacade.getChatUser(username);
-                    request.getSession().setAttribute("user", user);        // save user to current session
-                    request.getSession().setAttribute("username", user.getName());
+                    createSession(request, user);
                     request.getRequestDispatcher("chat.jsp").forward(request, response);
                 } else {
-                    // TODO: return error: username or password is wrong
+                    request.setAttribute("errorMessage", "Username or password is wrong");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
                 }
             }
         }
+    }
+    
+    private void createSession(HttpServletRequest request, ChatUser user) {
+        request.getSession().setAttribute("user", user);
+        request.getSession().setAttribute("username", user.getName());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -30,11 +30,17 @@ and open the template in the editor.
 
                         <form id="loginform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet?action=login">
 
-                            <div id="signupalert" style="display:none" class="alert alert-danger">
-                                <p>Error:</p>
+                            <%
+                                if (request.getAttribute("errorMessage") != null) {
+                            %>
+                            <div id="signupalert" class="alert alert-danger">
+                                <p>Error: ${requestScope.errorMessage}</p>
                                 <span></span>
                             </div>
-                            
+                            <%
+                                }
+                            %>
+
                             <div style="margin-bottom: 25px" class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="Username">                                        

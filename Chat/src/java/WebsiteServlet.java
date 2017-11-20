@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -28,7 +29,7 @@ public class WebsiteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");        
+        response.setContentType("text/html;charset=UTF-8");
         if(request.getParameter("link") != null) {
             request.setAttribute("link", request.getParameter("link"));
         }
@@ -39,6 +40,11 @@ public class WebsiteServlet extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } else if (request.getAttribute("link").equals("register")) {
                 request.getRequestDispatcher("register.jsp").forward(request, response);
+            } else if (request.getAttribute("link").equals("logout")) {
+                HttpSession session = request.getSession(false);
+                session.removeAttribute("user");
+                session.removeAttribute("username");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
                 
             } else if(request.getAttribute("link").equals("chat")) {
                 request.getRequestDispatcher("chat.jsp").forward(request, response);

@@ -27,11 +27,16 @@ and open the template in the editor.
                     <div class="panel-body" >
                         <form id="signupform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet?action=register">
 
-                            <div id="signupalert" style="display:none" class="alert alert-danger">
-                                <p>Error:</p>
-                                <span></span>
-                            </div>
-
+                            <%
+                                if(request.getAttribute("errorMessage") != null) {
+                            %>
+                                <div id="signupalert" class="alert alert-danger">
+                                    <p>Error: ${requestScope.errorMessage}</p>
+                                    <span></span>
+                                </div>
+                            <%
+                                }
+                            %>
 
                             <div class="form-group">
                                 <label for="username" class="col-md-3 control-label">Username</label>

@@ -33,7 +33,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     }
     
     public boolean addUser(Integer id, String name, String password, Boolean isModerator) {
-        if(!checkExists(id)) {
+        if(!checkExists(id, name)) {
             ChatUser u = new ChatUser(id, name, password, isModerator);
             em.persist(u);
             return true;
@@ -41,10 +41,12 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         return false;
     }
     
-    private boolean checkExists(Integer id) {
+    private boolean checkExists(Integer id, String name) {
         Query q = em.createNamedQuery("ChatUser.findById");
         q.setParameter("id", id);
-        return !(q.getResultList().isEmpty());
+        Query q2 = em.createNamedQuery("ChatUser.findByName");
+        q2.setParameter("name", name);
+        return (!(q.getResultList().isEmpty()) || !(q2.getResultList().isEmpty()));
     }
     
     public boolean checkAccount(String username, String password) {

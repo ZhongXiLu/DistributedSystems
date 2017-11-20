@@ -20,7 +20,7 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">${sessionScope.username} <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Log Out</a></li>
+                    <li><a href="WebsiteServlet?link=logout">Log Out</a></li>
                 </ul>
             </li>
         <%
