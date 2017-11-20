@@ -1,5 +1,7 @@
 
 import chat_user.ChatUser;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,9 +36,20 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     
     public boolean addUser(Integer id, String name, String password, Boolean isModerator) {
         if(!checkExists(id, name)) {
-            ChatUser u = new ChatUser(id, name, password, isModerator);
-            em.persist(u);
-            return true;
+            try {
+                // MD5 hashing
+                String passwordMD5 = null;
+                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                byte[] tmp = password.getBytes();
+                md5.update(tmp);
+                passwordMD5 = byteArrToString(md5.digest());
+                
+                ChatUser u = new ChatUser(id, name, passwordMD5, isModerator);
+                em.persist(u);
+                return true;
+            } catch(NoSuchAlgorithmException ex) {
+                return false;
+            }
         }
         return false;
     }
@@ -53,12 +66,22 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         ChatUser user = getChatUser(username);
         if(user != null) {
             // check password
-            if(user.getPassword().equals(password)) {
-                return true;
-            } else {
+            try {
+                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                byte[] tmp = password.getBytes();
+                md5.update(tmp);
+                String passwordMD5 = byteArrToString(md5.digest());
+                if (user.getPassword().equals(passwordMD5)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch(NoSuchAlgorithmException ex) {
                 return false;
             }
+            
         } else {
+            // username doesnt exist
             return false;
         }
     }
@@ -73,5 +96,20 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         } else {
             return results.get(0);
         }
+    }
+    
+    // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
+    private static String byteArrToString(byte[] b) {
+        String res = null;
+        StringBuffer sb = new StringBuffer(b.length * 2);
+        for (int i = 0; i < b.length; i++) {
+            int j = b[i] & 0xff;
+            if (j < 16) {
+                sb.append('0');
+            }
+            sb.append(Integer.toHexString(j));
+        }
+        res = sb.toString();
+        return res.toUpperCase();
     }
 }
