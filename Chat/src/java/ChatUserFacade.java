@@ -48,20 +48,28 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     }
     
     public boolean checkAccount(String username, String password) {
-        TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByName", ChatUser.class);
-        q.setParameter("name", username);
-        List<ChatUser> results = q.getResultList();
-        if(results.isEmpty() || results.size() > 1) {
-            // user doesnt exist (or for some reason there's more than one account linked to one name)
-            return false;
-        } else {
+        ChatUser user = getChatUser(username);
+        if(user != null) {
             // check password
-            if(results.get(0).getPassword().equals(password)) {
+            if(user.getPassword().equals(password)) {
                 return true;
             } else {
                 return false;
             }
-            
+        } else {
+            return false;
+        }
+    }
+    
+    public ChatUser getChatUser(String username) {
+        TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByName", ChatUser.class);
+        q.setParameter("name", username);
+        List<ChatUser> results = q.getResultList();
+        if (results.isEmpty() || results.size() > 1) {
+            // user doesnt exist (or for some reason there's more than one account linked to one name)
+            return null;
+        } else {
+            return results.get(0);
         }
     }
 }

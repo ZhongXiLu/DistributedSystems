@@ -28,16 +28,18 @@ public class WebsiteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");        
         if(request.getParameter("link") != null) {
             request.setAttribute("link", request.getParameter("link"));
         }
         
         if(request.getParameter("link") != null) {
+            
             if(request.getAttribute("link").equals("login")) {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } else if (request.getAttribute("link").equals("register")) {
                 request.getRequestDispatcher("register.jsp").forward(request, response);
+                
             } else if(request.getAttribute("link").equals("chat")) {
                 request.getRequestDispatcher("chat.jsp").forward(request, response);
             } else {

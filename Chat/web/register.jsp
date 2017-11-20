@@ -15,7 +15,7 @@ and open the template in the editor.
     </head>
     
     <body>
-        <jsp:include page="navbar.html"></jsp:include>
+        <jsp:include page="navbar.jsp"></jsp:include>
                 
         <div class="container">    
             <div style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">

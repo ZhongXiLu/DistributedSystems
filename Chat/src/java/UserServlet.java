@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import chat_user.ChatUser;
 import java.io.IOException;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -51,6 +52,9 @@ public class UserServlet extends HttpServlet {
                     _id++;
                     boolean isModerator = false;    // TODO: make first user the moderator
                     boolean success = chatUserFacade.addUser(id, username, password, isModerator);
+                    ChatUser user = chatUserFacade.getChatUser(username);
+                    request.getSession().setAttribute("user", user);        // save user to current session
+                    request.getSession().setAttribute("username", user.getName());
                     request.getRequestDispatcher("chat.jsp").forward(request, response);
                 } else {
                     // TODO: return error: passwords do not match
@@ -61,6 +65,9 @@ public class UserServlet extends HttpServlet {
                 String password = request.getParameter("password");
                 boolean success = chatUserFacade.checkAccount(username, password);
                 if(success) {
+                    ChatUser user = chatUserFacade.getChatUser(username);
+                    request.getSession().setAttribute("user", user);        // save user to current session
+                    request.getSession().setAttribute("username", user.getName());
                     request.getRequestDispatcher("chat.jsp").forward(request, response);
                 } else {
                     // TODO: return error: username or password is wrong

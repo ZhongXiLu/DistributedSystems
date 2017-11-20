@@ -4,6 +4,7 @@
     Author     : zhongxilu
 --%>
 
+<%@page import="chat_user.ChatUser"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -14,14 +15,16 @@
         <jsp:include page="includes.html"></jsp:include>
     </head>
     <body>
-        <jsp:include page="navbar.html"></jsp:include>
-        <h1>Hello World!</h1>
-        
+        <jsp:include page="navbar.jsp"></jsp:include>
+
+        <% ChatUser user = (ChatUser)session.getAttribute("user"); %>
         <%
             // Redirect to login if not logged in
-            response.sendRedirect("WebsiteServlet?link=login");
-            // Else, send to chat application directly
-            // ...
+            if(user == null) {
+                response.sendRedirect("WebsiteServlet?link=login");
+            } else {
+                response.sendRedirect("WebsiteServlet?link=chat");
+            }
         %>
         
     </body>
