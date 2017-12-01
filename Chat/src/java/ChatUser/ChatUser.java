@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chat_user;
+package ChatUser;
 
 import Channel.Channel;
 import Message.Message;
@@ -37,9 +37,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ChatUser.findAll", query = "SELECT c FROM ChatUser c")
+    , @NamedQuery(name = "ChatUser.onlineUsers", query = "SELECT c FROM ChatUser c WHERE c.isOnline = 1")
     , @NamedQuery(name = "ChatUser.findById", query = "SELECT c FROM ChatUser c WHERE c.id = :id")
     , @NamedQuery(name = "ChatUser.findByName", query = "SELECT c FROM ChatUser c WHERE c.name = :name")
     , @NamedQuery(name = "ChatUser.findByPassword", query = "SELECT c FROM ChatUser c WHERE c.password = :password")
+    , @NamedQuery(name = "ChatUser.findByIsOnline", query = "SELECT c FROM ChatUser c WHERE c.isOnline = :isOnline")
     , @NamedQuery(name = "ChatUser.findByIsModerator", query = "SELECT c FROM ChatUser c WHERE c.isModerator = :isModerator")})
 public class ChatUser implements Serializable {
 
@@ -70,6 +72,10 @@ public class ChatUser implements Serializable {
     private String password;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "IS_ONLINE")
+    private Boolean isOnline;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "IS_MODERATOR")
     private Boolean isModerator;
 
@@ -80,10 +86,11 @@ public class ChatUser implements Serializable {
         this.id = id;
     }
 
-    public ChatUser(Integer id, String name, String password, Boolean isModerator) {
+    public ChatUser(Integer id, String name, String password, Boolean isOnline, Boolean isModerator) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.isOnline = isOnline;
         this.isModerator = isModerator;
     }
 
@@ -109,6 +116,14 @@ public class ChatUser implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(Boolean isOnline) {
+        this.isOnline = isOnline;
     }
 
     public Boolean getIsModerator() {
@@ -141,7 +156,7 @@ public class ChatUser implements Serializable {
 
     @Override
     public String toString() {
-        return "chat_user.ChatUser[ id=" + id + " ]";
+        return "ChatUser.ChatUser[ id=" + id + " ]";
     }
 
     @XmlTransient

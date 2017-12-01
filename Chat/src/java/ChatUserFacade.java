@@ -1,5 +1,5 @@
 
-import chat_user.ChatUser;
+import ChatUser.ChatUser;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
                 md5.update(tmp);
                 passwordMD5 = byteArrToString(md5.digest());
                 
-                ChatUser u = new ChatUser(id, name, passwordMD5, isModerator);
+                ChatUser u = new ChatUser(id, name, passwordMD5, true, isModerator);
                 em.persist(u);
                 return true;
             } catch(NoSuchAlgorithmException ex) {
@@ -98,6 +98,16 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         }
     }
     
+    public List<ChatUser> getAllOnlineUsers() {
+        TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.onlineUsers", ChatUser.class);
+        return q.getResultList();
+    }
+    
+    public void setIsOnline(String username, Boolean online) {
+        ChatUser user = getChatUser(username);
+        user.setIsOnline(online);
+    }
+        
     // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
     private static String byteArrToString(byte[] b) {
         String res = null;
@@ -112,4 +122,5 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         res = sb.toString();
         return res.toUpperCase();
     }
+    
 }

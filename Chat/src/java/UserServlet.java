@@ -4,14 +4,16 @@
  * and open the template in the editor.
  */
 
-import chat_user.ChatUser;
+import ChatUser.ChatUser;
 import java.io.IOException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -44,6 +46,7 @@ public class UserServlet extends HttpServlet {
         if (request.getParameter("action") != null) {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
+            
             if (request.getAttribute("action").equals("register")) {
                 // create new user and log in
                 String repassword = request.getParameter("repassword");
@@ -65,16 +68,26 @@ public class UserServlet extends HttpServlet {
                     request.setAttribute("errorMessage", "Passwords do not match");
                     request.getRequestDispatcher("register.jsp").forward(request, response);
                 }
+                
             } else if (request.getAttribute("action").equals("login")) {
                 boolean success = chatUserFacade.checkAccount(username, password);
                 if(success) {
                     ChatUser user = chatUserFacade.getChatUser(username);
+                    chatUserFacade.setIsOnline(username, true);
                     createSession(request, user);
+                    List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
+                    request.setAttribute("onlineUsers", onlineUsers);
                     request.getRequestDispatcher("chat.jsp").forward(request, response);
                 } else {
                     request.setAttribute("errorMessage", "Username or password is wrong");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
                 }
+            } else if (request.getAttribute("action").equals("logout")) {
+                HttpSession session = request.getSession(false);
+                chatUserFacade.setIsOnline((String)session.getAttribute("username"), false);
+                session.removeAttribute("user");
+                session.removeAttribute("username");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
             }
         }
     }

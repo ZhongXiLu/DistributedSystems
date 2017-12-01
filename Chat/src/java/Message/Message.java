@@ -6,7 +6,7 @@
 package Message;
 
 import Channel.Channel;
-import chat_user.ChatUser;
+import ChatUser.ChatUser;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -37,10 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m")
     , @NamedQuery(name = "Message.findById", query = "SELECT m FROM Message m WHERE m.id = :id")
     , @NamedQuery(name = "Message.findByContent", query = "SELECT m FROM Message m WHERE m.content = :content")
-    , @NamedQuery(name = "Message.findByTimestamp", query = "SELECT m FROM Message m WHERE m.timestamp = :timestamp")
-    , @NamedQuery(name = "Message.findByChannelId", query = "SELECT m FROM Message m WHERE m.channelId = :channelId")
-    , @NamedQuery(name = "Message.findByUserId", query = "SELECT m FROM Message m WHERE m.userId = :userId")
-})
+    , @NamedQuery(name = "Message.findByTimestamp", query = "SELECT m FROM Message m WHERE m.timestamp = :timestamp")})
 public class Message implements Serializable {
 
     private static final long serialVersionUID = 1L;

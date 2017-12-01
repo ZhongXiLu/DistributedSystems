@@ -4,7 +4,7 @@
     Author     : zhongxilu
 --%>
 
-<%@page import="chat_user.ChatUser"%>
+<%@page import="ChatUser.ChatUser"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

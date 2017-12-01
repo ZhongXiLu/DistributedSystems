@@ -60,14 +60,10 @@
             <td class="col-md-2">
                 <h4>Online Users</h4>
                 <ul class="list-group">
-                  <li class="list-group-item">User 1</li>
-                  <li style="color:red;" class="list-group-item">User 2</li>
-                  <li class="list-group-item">User 3</li>
-                  <li class="list-group-item">User 4</li>
-                  <li class="list-group-item">User 5</li>
-                  <li class="list-group-item">User 6</li>
-                  <li class="list-group-item">User 7</li>
-                  <li class="list-group-item">User 8</li>
+                    <c:forEach items="${onlineUsers}" var="user">
+                        <li class="list-group-item">${user.getName()}</li>
+                    </c:forEach>
+                  <!--<li style="color:red;" class="list-group-item">User 2</li>-->
                 </ul>
             </td>
         </tr>

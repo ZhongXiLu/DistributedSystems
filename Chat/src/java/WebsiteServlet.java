@@ -4,8 +4,11 @@
  * and open the template in the editor.
  */
 
+import ChatUser.ChatUser;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +20,9 @@ import javax.servlet.http.HttpSession;
  * @author zhongxilu
  */
 public class WebsiteServlet extends HttpServlet {
+
+    @EJB
+    private ChatUserFacade chatUserFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,13 +46,9 @@ public class WebsiteServlet extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } else if (request.getAttribute("link").equals("register")) {
                 request.getRequestDispatcher("register.jsp").forward(request, response);
-            } else if (request.getAttribute("link").equals("logout")) {
-                HttpSession session = request.getSession(false);
-                session.removeAttribute("user");
-                session.removeAttribute("username");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-                
             } else if(request.getAttribute("link").equals("chat")) {
+                List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
+                request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("chat.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("index.jsp").forward(request, response);

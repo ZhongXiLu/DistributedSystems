@@ -5,8 +5,8 @@
  */
 package Channel;
 
+import ChatUser.ChatUser;
 import Message.Message;
-import chat_user.ChatUser;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
