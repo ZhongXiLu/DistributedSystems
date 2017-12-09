@@ -34,8 +34,8 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         super(ChatUser.class);
     }
     
-    public boolean addUser(Integer id, String name, String password, Boolean isModerator) {
-        if(!checkExists(id, name)) {
+    public boolean addUser(String name, String password, Boolean isModerator) {
+        if(!checkExists(name)) {
             try {
                 // MD5 hashing
                 String passwordMD5 = null;
@@ -44,7 +44,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
                 md5.update(tmp);
                 passwordMD5 = byteArrToString(md5.digest());
                 
-                ChatUser u = new ChatUser(id, name, passwordMD5, true, isModerator);
+                ChatUser u = new ChatUser(name, passwordMD5, true, isModerator);
                 em.persist(u);
                 return true;
             } catch(NoSuchAlgorithmException ex) {
@@ -54,12 +54,10 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         return false;
     }
     
-    private boolean checkExists(Integer id, String name) {
-        Query q = em.createNamedQuery("ChatUser.findById");
-        q.setParameter("id", id);
-        Query q2 = em.createNamedQuery("ChatUser.findByName");
-        q2.setParameter("name", name);
-        return (!(q.getResultList().isEmpty()) || !(q2.getResultList().isEmpty()));
+    private boolean checkExists(String name) {
+        Query q = em.createNamedQuery("ChatUser.findByName");
+        q.setParameter("name", name);
+        return !(q.getResultList().isEmpty());
     }
     
     public boolean checkAccount(String username, String password) {

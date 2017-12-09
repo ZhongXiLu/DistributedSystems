@@ -86,8 +86,7 @@ public class ChatUser implements Serializable {
         this.id = id;
     }
 
-    public ChatUser(Integer id, String name, String password, Boolean isOnline, Boolean isModerator) {
-        this.id = id;
+    public ChatUser(String name, String password, Boolean isOnline, Boolean isModerator) {
         this.name = name;
         this.password = password;
         this.isOnline = isOnline;

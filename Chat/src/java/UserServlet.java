@@ -24,8 +24,6 @@ public class UserServlet extends HttpServlet {
 
     @EJB
     private ChatUserFacade chatUserFacade;
-
-    private static int _id = 0;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -51,10 +49,8 @@ public class UserServlet extends HttpServlet {
                 // create new user and log in
                 String repassword = request.getParameter("repassword");
                 if (password.equals(repassword)) {
-                    int id = _id;
-                    _id++;
                     boolean isModerator = false;    // TODO: make first user the moderator
-                    boolean success = chatUserFacade.addUser(id, username, password, isModerator);
+                    boolean success = chatUserFacade.addUser(username, password, isModerator);
                     if(success) {
                         ChatUser user = chatUserFacade.getChatUser(username);
                         createSession(request, user);
