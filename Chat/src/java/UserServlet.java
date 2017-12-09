@@ -91,7 +91,6 @@ public class UserServlet extends HttpServlet {
 			else if (request.getAttribute("action").equals("getOnlineUsers")) {
                 List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
                 request.setAttribute("onlineUsers", onlineUsers);
-				System.out.println("In Servlet");
 				request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
 			}
         }

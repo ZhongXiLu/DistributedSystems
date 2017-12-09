@@ -25,13 +25,7 @@
                   <button type="button" class="list-group-item">My Private Channel</button>
                 </ul>
                 <h4>Public Channels</h4>
-                <ul class="list-group">
-                  <button type="button" class="list-group-item">Channel 1</button>
-                  <button type="button" class="list-group-item list-group-item-success">Channel 2</button>
-                  <button type="button" class="list-group-item">Channel 3</button>
-                  <button type="button" class="list-group-item">Channel 4</button>
-                  <button type="button" class="list-group-item">Channel 5</button>
-                </ul>
+				<div id="publicChannels"></div>
             </td>
             <td class="col-md-8">
                 <h4>Chat</h4>
@@ -59,15 +53,18 @@
             </td>
             <td class="col-md-2">
                 <h4>Online Users</h4>
-				<div id="onlineUsers"></div
+				<div id="onlineUsers"></div>
             </td>
         </tr>
     </table>
     
     <script type="text/javascript">
 		function update() {
-			$.get("UserServlet", {"action": "getOnlineUsers"}, function(responseXml) {                // Execute Ajax GET request on URL of "someservlet" and execute the following function with Ajax response XML...
-				$("#onlineUsers").html($(responseXml).find("data").html()); // Parse XML, find <data> element and append its HTML to HTML DOM element with ID "somediv".
+			$.get("UserServlet", {"action": "getOnlineUsers"}, function(responseXml) {
+				$("#onlineUsers").html($(responseXml).find("data").html());
+			});
+			$.get("ChannelServlet", {"action": "getPublicChannels"}, function(responseXml) {
+				$("#publicChannels").html($(responseXml).find("data").html());
 			});
 			setTimeout(update, 1000);
 		}
