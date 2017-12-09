@@ -58,7 +58,7 @@ public class UserServlet extends HttpServlet {
                     if(success) {
                         ChatUser user = chatUserFacade.getChatUser(username);
                         createSession(request, user);
-                        request.getRequestDispatcher("chat.jsp").forward(request, response);
+                        request.getRequestDispatcher("index.jsp").forward(request, response);
                     } else {
                         request.setAttribute("errorMessage", "Username already exists");
                         request.getRequestDispatcher("register.jsp").forward(request, response);
@@ -75,9 +75,7 @@ public class UserServlet extends HttpServlet {
                     ChatUser user = chatUserFacade.getChatUser(username);
                     chatUserFacade.setIsOnline(username, true);
                     createSession(request, user);
-                    List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
-                    request.setAttribute("onlineUsers", onlineUsers);
-                    request.getRequestDispatcher("chat.jsp").forward(request, response);
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
                 } else {
                     request.setAttribute("errorMessage", "Username or password is wrong");
                     request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -89,6 +87,13 @@ public class UserServlet extends HttpServlet {
                 session.removeAttribute("username");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
+			
+			else if (request.getAttribute("action").equals("getOnlineUsers")) {
+                List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
+                request.setAttribute("onlineUsers", onlineUsers);
+				System.out.println("In Servlet");
+				request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
+			}
         }
     }
     

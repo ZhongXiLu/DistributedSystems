@@ -47,8 +47,6 @@ public class WebsiteServlet extends HttpServlet {
             } else if (request.getAttribute("link").equals("register")) {
                 request.getRequestDispatcher("register.jsp").forward(request, response);
             } else if(request.getAttribute("link").equals("chat")) {
-                List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
-                request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("chat.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("index.jsp").forward(request, response);

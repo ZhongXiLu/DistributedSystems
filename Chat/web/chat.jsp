@@ -59,15 +59,24 @@
             </td>
             <td class="col-md-2">
                 <h4>Online Users</h4>
-                <ul class="list-group">
-                    <c:forEach items="${onlineUsers}" var="user">
-                        <li class="list-group-item">${user.getName()}</li>
-                    </c:forEach>
-                  <!--<li style="color:red;" class="list-group-item">User 2</li>-->
-                </ul>
+				<div id="onlineUsers"></div
             </td>
         </tr>
     </table>
+    
+    <script type="text/javascript">
+		function update() {
+			$.get("UserServlet", {"action": "getOnlineUsers"}, function(responseXml) {                // Execute Ajax GET request on URL of "someservlet" and execute the following function with Ajax response XML...
+				$("#onlineUsers").html($(responseXml).find("data").html()); // Parse XML, find <data> element and append its HTML to HTML DOM element with ID "somediv".
+			});
+			setTimeout(update, 1000);
+		}
+		
+		$(document).ready(function() {
+			update();
+		});
+    </script>
+    
 </body>
 
 
