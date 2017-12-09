@@ -1,17 +1,15 @@
-package Servlets;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Servlets;
 
-import Facades.ChannelFacade;
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
+import Facades.ChannelFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author zhongxilu
  */
-@WebServlet(urlPatterns = {"/ChannelServlet"})
-public class ChannelServlet extends HttpServlet {
+@WebServlet(name = "MessageServlet", urlPatterns = {"/MessageServlet"})
+public class MessageServlet extends HttpServlet {
 
 	@EJB
 	private ChannelFacade channelFacade;
@@ -46,12 +44,10 @@ public class ChannelServlet extends HttpServlet {
         }
         
         if (request.getParameter("action") != null) {
-			if (request.getAttribute("action").equals("getPublicChannels")) {
-                List<Channel> publicChannels = channelFacade.getPublicChannels();
-                request.setAttribute("publicChannels", publicChannels);
+			if (request.getAttribute("action").equals("getLatestMessages")) {
 				Channel myChannel = channelFacade.getChannelOfUser((ChatUser) request.getSession().getAttribute("user"));
-                request.setAttribute("myChannel", myChannel.getName());
-				request.getRequestDispatcher("publicChannels.jsp").forward(request, response);
+                request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel.getId()));
+				request.getRequestDispatcher("messages.jsp").forward(request, response);
 			}
         }
 	}

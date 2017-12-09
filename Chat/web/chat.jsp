@@ -29,21 +29,12 @@
             </td>
             <td class="col-md-8">
                 <h4>Chat</h4>
-                <div class="panel panel-default">
-                  <div class="panel-body">
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p style="color:red;">User 2: Stop with spamming!</p>
-                        <p>User 1: Hello World!</p>
-                        <p>User 1: Hello World!</p>
-                        <p><i>User 2 has banned User 1 from this channel.</i></p>
-                  </div>
-                </div>
+				<div class="panel panel-default">
+				<div class="panel-body" style="height: calc(100vh - 225px); overflow-y: auto;">
+					<div id="messages"></div>
+				</div>
+				</div>
+				
                 <div class="input-group">
               <input type="text" class="form-control">
               <span class="input-group-btn">
@@ -65,6 +56,9 @@
 			});
 			$.get("ChannelServlet", {"action": "getPublicChannels"}, function(responseXml) {
 				$("#publicChannels").html($(responseXml).find("data").html());
+			});
+			$.get("MessageServlet", {"action": "getLatestMessages"}, function(responseXml) {
+				$("#messages").html($(responseXml).find("data").html());
 			});
 			setTimeout(update, 1000);
 		}

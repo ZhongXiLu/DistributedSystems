@@ -4,6 +4,7 @@ package Facades;
 import Facades.AbstractFacade;
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
+import EntityClasses.Message;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,8 +42,13 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		return q.getResultList();
 	}
 	
-	public String getChannelOfUser(ChatUser user) {
-		System.out.println("CHANNEL: " + user.getChannelId().getName());
-		return user.getChannelId().getName();
-	}  
+	public Channel getChannelOfUser(ChatUser user) {
+		return user.getChannelId();
+	}
+	
+	public List<Message> getLatestMessagesOfChannel(int channelId) {
+		TypedQuery<Message> q = em.createNamedQuery("Channel.findByIsPublic", Message.class);
+		q.setParameter("channelId", channelId);
+		return q.setMaxResults(100).getResultList();
+	}
 }
