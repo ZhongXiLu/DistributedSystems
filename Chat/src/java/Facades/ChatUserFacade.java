@@ -1,7 +1,12 @@
+package Facades;
 
-import ChatUser.ChatUser;
+
+import Facades.AbstractFacade;
+import EntityClasses.Channel;
+import EntityClasses.ChatUser;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -46,6 +51,12 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
                 
                 ChatUser u = new ChatUser(name, passwordMD5, true, isModerator);
                 em.persist(u);
+				
+				// Add new user to default channel: 'Welcome'
+				TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
+				q.setParameter("name", "Welcome");
+				u.setChannelId(q.getResultList().get(0));
+				
                 return true;
             } catch(NoSuchAlgorithmException ex) {
                 return false;

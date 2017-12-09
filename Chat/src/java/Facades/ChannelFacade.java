@@ -1,5 +1,8 @@
+package Facades;
 
-import Channel.Channel;
+
+import Facades.AbstractFacade;
+import EntityClasses.Channel;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

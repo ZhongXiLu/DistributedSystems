@@ -4,7 +4,7 @@
     Author     : zhongxilu
 --%>
 
-<%@page import="ChatUser.ChatUser"%>
+<%@page import="EntityClasses.ChatUser"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
