@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -27,17 +28,15 @@ and open the template in the editor.
                     <div class="panel-body" >
                         <form id="signupform" class="form-horizontal" role="form" method="POST" action="ChatUserServlet?action=register">
 
-                            <%
-                                if(request.getAttribute("errorMessage") != null) {
-                            %>
-                                <div id="signupalert" class="alert alert-danger">
-                                    <p>Error: ${requestScope.errorMessage}</p>
-                                    <span></span>
-                                </div>
-                            <%
-                                }
-                            %>
-
+							<c:choose>
+								<c:when test="${errorMessage != null}">
+									<div id="signupalert" class="alert alert-danger">
+										<p>Error: ${requestScope.errorMessage}</p>
+										<span></span>
+									</div>	
+								</c:when>
+							</c:choose>
+							
                             <div class="form-group">
                                 <label for="username" class="col-md-3 control-label">Username</label>
                                 <div class="col-md-9">

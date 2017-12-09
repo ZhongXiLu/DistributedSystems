@@ -8,6 +8,7 @@ package Servlets;
 
 import Facades.ChannelFacade;
 import EntityClasses.Channel;
+import EntityClasses.ChatUser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -48,6 +49,9 @@ public class ChannelServlet extends HttpServlet {
 			if (request.getAttribute("action").equals("getPublicChannels")) {
                 List<Channel> publicChannels = channelFacade.getPublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
+				// Get the channel where the user is in
+				String myChannel = channelFacade.getChannelOfUser((ChatUser) request.getSession().getAttribute("user"));
+                request.setAttribute("myChannel", myChannel);
 				request.getRequestDispatcher("publicChannels.jsp").forward(request, response);
 			}
         }

@@ -5,8 +5,14 @@
 <data>
 	<ul class="list-group">
 		<c:forEach items="${publicChannels}" var="channel">
-			<button type="button" class="list-group-item">${channel.getName()}</button>
+			<c:choose>
+				<c:when test="${channel.getName() == myChannel}">
+					<button type="button" class="list-group-item list-group-item-success">${myChannel}</button>
+				</c:when>
+				<c:otherwise>
+					<button type="button" class="list-group-item">${channel.getName()}</button>
+				</c:otherwise>
+			</c:choose>
 		</c:forEach>
-			<!--<button type="button" class="list-group-item list-group-item-success">Channel 2</button>-->
 	</ul>
 </data>

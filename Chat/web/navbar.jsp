@@ -4,6 +4,7 @@
     Author     : zhongxilu
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="EntityClasses.ChatUser"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -14,18 +15,16 @@
       <a class="navbar-brand" href="WebsiteServlet?link=index">Chat!</a>
     </div>
     <ul class="nav navbar-nav navbar-right">
-        <%
-            if(user != null) {
-        %>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">${sessionScope.username} <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="UserServlet?action=logout">Log Out</a></li>
-                </ul>
-            </li>
-        <%
-            }
-        %>
+		<c:choose>
+			<c:when test="${user != null}">
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">${sessionScope.username} <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="UserServlet?action=logout">Log Out</a></li>
+					</ul>
+				</li>
+			</c:when>
+		</c:choose>
     </ul>
   </div>
 </nav>

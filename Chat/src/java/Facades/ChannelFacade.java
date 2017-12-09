@@ -3,6 +3,7 @@ package Facades;
 
 import Facades.AbstractFacade;
 import EntityClasses.Channel;
+import EntityClasses.ChatUser;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -39,4 +40,9 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		q.setParameter("isPublic", true);
 		return q.getResultList();
 	}
+	
+	public String getChannelOfUser(ChatUser user) {
+		System.out.println("CHANNEL: " + user.getChannelId().getName());
+		return user.getChannelId().getName();
+	}  
 }
