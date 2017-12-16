@@ -44,9 +44,9 @@
 				</div>
 				
                 <div class="input-group">
-              <input type="text" class="form-control">
+              <input id="message" type="text" class="form-control">
               <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Send</button>
+                <button id="sendMessage" class="btn btn-default" type="button">Send</button>
               </span>
                 </div>
             </td>
@@ -73,6 +73,20 @@
 		
 		$(document).ready(function() {
 			update();
+			
+			$("#sendMessage").click(function () {
+				$.ajax({
+					
+					url: "MessageServlet?action=sendMessage",
+					type: "POST",
+					data: {
+						message: $("#message").val(),
+					},
+					success: function() {
+						$("#message").val("");
+					} 
+				});
+			});
 		});
     </script>
     

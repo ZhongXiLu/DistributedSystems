@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -49,6 +50,12 @@ public class MessageServlet extends HttpServlet {
 				Channel myChannel = user.getChannelId();
                 request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel));
 				request.getRequestDispatcher("messages.jsp").forward(request, response);
+			
+			} else if (request.getAttribute("action").equals("sendMessage")) {
+				HttpSession session = request.getSession(false);
+				ChatUser user = (ChatUser) session.getAttribute("user");
+				String message = request.getParameter("message");
+				channelFacade.addMessage(user, message);
 			}
         }
 	}

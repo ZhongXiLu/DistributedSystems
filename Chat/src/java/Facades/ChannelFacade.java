@@ -5,6 +5,7 @@ import Facades.AbstractFacade;
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
 import EntityClasses.Message;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -87,5 +88,18 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		TypedQuery<Message> q = em.createNamedQuery("Message.getLatestMessages", Message.class);
 		q.setParameter("channel", channel);
 		return q.setMaxResults(100).getResultList();
+	}
+	
+	public void addMessage(ChatUser user, String message) {
+		// TODO: does not work yet
+		
+		Channel channel = user.getChannelId();
+		Collection<Message> messages = channel.getMessageCollection();
+		Message newMessage = new Message();
+		newMessage.setContent(message);
+		messages.add(newMessage);
+		System.out.println(newMessage);
+		System.out.println(messages);
+		channel.setMessageCollection(messages);
 	}
 }
