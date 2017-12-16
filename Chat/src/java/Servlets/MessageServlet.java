@@ -45,8 +45,9 @@ public class MessageServlet extends HttpServlet {
         
         if (request.getParameter("action") != null) {
 			if (request.getAttribute("action").equals("getLatestMessages")) {
-				Channel myChannel = channelFacade.getChannelOfUser((ChatUser) request.getSession().getAttribute("user"));
-                request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel.getId()));
+				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				Channel myChannel = user.getChannelId();
+                request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel));
 				request.getRequestDispatcher("messages.jsp").forward(request, response);
 			}
         }

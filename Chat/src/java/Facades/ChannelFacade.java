@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 /*
@@ -36,19 +37,47 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		super(Channel.class);
 	}
 	
-	public List<Channel> getPublicChannels() {
-		TypedQuery<Channel> q = em.createNamedQuery("Channel.findByIsPublic", Channel.class);
-		q.setParameter("isPublic", true);
+	// Set channel to inactive (NOT deleting channel in db)
+	public Boolean removeChannel(String name) {
+		TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
+		q.setParameter("name", name);
+		List<Channel> results = q.getResultList();
+		if (results.isEmpty() || results.size() > 1) {
+			// channel doesnt exist...
+			return false;
+		} else {
+			results.get(0).setIsActive(false);
+			return true;
+		}
+	}
+	
+	public Boolean addPublicChannel(String name) {
+		if(!checkExists(name)) {
+			Channel newChannel = new Channel(name, true, true);	// new public and active channel
+			em.persist(newChannel);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean checkExists(String name) {
+		Query q = em.createNamedQuery("Channel.findByName");
+		q.setParameter("name", name);
+		return !(q.getResultList().isEmpty());
+	}
+	
+	public List<Channel> getActivePublicChannels() {
+		TypedQuery<Channel> q = em.createNamedQuery("Channel.activePublic", Channel.class);
 		return q.getResultList();
 	}
 	
-	public Channel getChannelOfUser(ChatUser user) {
+	public Channel gletChannelOfUser(ChatUser user) {
 		return user.getChannelId();
 	}
 	
-	public List<Message> getLatestMessagesOfChannel(int channelId) {
-		TypedQuery<Message> q = em.createNamedQuery("Channel.findByIsPublic", Message.class);
-		q.setParameter("channelId", channelId);
+	public List<Message> getLatestMessagesOfChannel(Channel channel) {
+		TypedQuery<Message> q = em.createNamedQuery("Message.getLatestMessages", Message.class);
+		q.setParameter("channel", channel);
 		return q.setMaxResults(100).getResultList();
 	}
 }

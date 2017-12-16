@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "Channel.findAll", query = "SELECT c FROM Channel c")
+	, @NamedQuery(name = "Channel.activePublic", query = "SELECT c FROM Channel c WHERE c.isPublic = TRUE AND c.isActive = TRUE")
 	, @NamedQuery(name = "Channel.findById", query = "SELECT c FROM Channel c WHERE c.id = :id")
 	, @NamedQuery(name = "Channel.findByName", query = "SELECT c FROM Channel c WHERE c.name = :name")
 	, @NamedQuery(name = "Channel.findByIsPublic", query = "SELECT c FROM Channel c WHERE c.isPublic = :isPublic")
@@ -71,8 +72,7 @@ public class Channel implements Serializable {
 		this.id = id;
 	}
 
-	public Channel(Integer id, String name, Boolean isPublic, Boolean isActive) {
-		this.id = id;
+	public Channel(String name, Boolean isPublic, Boolean isActive) {
 		this.name = name;
 		this.isPublic = isPublic;
 		this.isActive = isActive;

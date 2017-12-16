@@ -24,9 +24,17 @@
                 <ul class="list-group">
                   <button type="button" class="list-group-item">My Private Channel</button>
                 </ul>
-                <h4>Public Channels</h4>
+        
+				<h4>
+					Public Channels
+					<!--if moderator -->
+					<a data-toggle="modal" data-target="#addChannel"><span class="glyphicon glyphicon-plus"></span></a>
+					<!--endif-->
+				</h4>
+				<jsp:include page="addChannel.jsp"></jsp:include>
 				<div id="publicChannels"></div>
-            </td>
+            
+		</td>
             <td class="col-md-8">
                 <h4>Chat</h4>
 				<div class="panel panel-default">

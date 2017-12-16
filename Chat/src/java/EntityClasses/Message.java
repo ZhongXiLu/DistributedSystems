@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m")
-	, @NamedQuery(name = "Message.getLatestMessages",query = "SELECT m FROM Message m WHERE m.channelId = :channelId ORDER BY m.timestamp ASC")
+	, @NamedQuery(name = "Message.getLatestMessages", query = "SELECT m FROM Message m WHERE m.channelId = :channel ORDER BY m.timestamp ASC")
 	, @NamedQuery(name = "Message.findById", query = "SELECT m FROM Message m WHERE m.id = :id")
 	, @NamedQuery(name = "Message.findByContent", query = "SELECT m FROM Message m WHERE m.content = :content")
 	, @NamedQuery(name = "Message.findByTimestamp", query = "SELECT m FROM Message m WHERE m.timestamp = :timestamp")})

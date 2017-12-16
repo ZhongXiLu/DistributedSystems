@@ -47,11 +47,23 @@ public class ChannelServlet extends HttpServlet {
         
         if (request.getParameter("action") != null) {
 			if (request.getAttribute("action").equals("getPublicChannels")) {
-                List<Channel> publicChannels = channelFacade.getPublicChannels();
+                List<Channel> publicChannels = channelFacade.getActivePublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
-				Channel myChannel = channelFacade.getChannelOfUser((ChatUser) request.getSession().getAttribute("user"));
+				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				Channel myChannel = user.getChannelId();
                 request.setAttribute("myChannel", myChannel.getName());
 				request.getRequestDispatcher("publicChannels.jsp").forward(request, response);
+				
+			} else if(request.getAttribute("action").equals("addPublicChannel")) {
+				String channelName = request.getParameter("channelName");
+				Boolean success = channelFacade.addPublicChannel(channelName);
+				// TODO: return error message?
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
+				
+			} else if(request.getAttribute("action").equals("deleteChannel")) {
+				String channelName = (String) request.getParameter("channelName");
+				Boolean success = channelFacade.removeChannel(channelName);
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
         }
 	}
