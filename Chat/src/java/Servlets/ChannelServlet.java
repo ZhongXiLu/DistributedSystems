@@ -64,6 +64,12 @@ public class ChannelServlet extends HttpServlet {
 				String channelName = (String) request.getParameter("channelName");
 				Boolean success = channelFacade.removeChannel(channelName);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
+			
+			} else if (request.getAttribute("action").equals("joinChannel")) {
+				String channelName = (String) request.getParameter("channelName");
+				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				user.setChannelId(channelFacade.getChannel(channelName));
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
         }
 	}

@@ -37,6 +37,18 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		super(Channel.class);
 	}
 	
+	public Channel getChannel(String name) {
+        TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
+        q.setParameter("name", name);
+        List<Channel> results = q.getResultList();
+        if (results.isEmpty() || results.size() > 1) {
+			// channel doesnt exist
+			return null;
+        } else {
+            return results.get(0);
+        }
+	}
+	
 	// Set channel to inactive (NOT deleting channel in db)
 	public Boolean removeChannel(String name) {
 		TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
@@ -69,10 +81,6 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 	public List<Channel> getActivePublicChannels() {
 		TypedQuery<Channel> q = em.createNamedQuery("Channel.activePublic", Channel.class);
 		return q.getResultList();
-	}
-	
-	public Channel gletChannelOfUser(ChatUser user) {
-		return user.getChannelId();
 	}
 	
 	public List<Message> getLatestMessagesOfChannel(Channel channel) {
