@@ -7,7 +7,7 @@ package Servlets;
  */
 
 import Facades.ChannelFacade;
-import EntityClasses.Channel;
+import EntityClasses.Channel;  // TODO: Remove reference to entityclasses. Replace with calls to Facade instead.
 import EntityClasses.ChatUser;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -68,7 +68,7 @@ public class ChannelServlet extends HttpServlet {
 			} else if (request.getAttribute("action").equals("joinChannel")) {
 				String channelName = (String) request.getParameter("channelName");
 				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-				user.setChannelId(channelFacade.getChannel(channelName));
+				user.setChannelId(channelFacade.getChannel(channelName));  // TODO: Fix this
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
         }

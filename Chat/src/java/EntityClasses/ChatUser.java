@@ -132,6 +132,8 @@ public class ChatUser implements Serializable {
 	}
 
 	public void setChannelId(Channel channelId) {
+                Channel oldChannelId = this.channelId;
+                //assert(this.channelId != channelId);
 		this.channelId = channelId;
 	}
 

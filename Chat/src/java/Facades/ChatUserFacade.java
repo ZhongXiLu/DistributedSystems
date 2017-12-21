@@ -44,7 +44,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
             try {
                 // MD5 hashing
                 String passwordMD5 = null;
-                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                MessageDigest md5 = MessageDigest.getInstance("MD5");  // TODO: change to sha1/sha256 hashing
                 byte[] tmp = password.getBytes();
                 md5.update(tmp);
                 passwordMD5 = byteArrToString(md5.digest());
