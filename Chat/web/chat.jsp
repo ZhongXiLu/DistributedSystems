@@ -20,20 +20,9 @@
     <table class="table">
         <tr>
             <td class="col-md-2">
-                <h4>Private Channel</h4>
-                <ul class="list-group">
-                  <button type="button" class="list-group-item">My Private Channel</button>
-                </ul>
-        
-				<h4>
-					Public Channels
-					<!--if moderator -->
-					<a data-toggle="modal" data-target="#addChannel"><span class="glyphicon glyphicon-plus"></span></a>
-					<!--endif-->
-				</h4>
-				<jsp:include page="addChannel.jsp"></jsp:include>
-				<div id="publicChannels"></div>
-            
+				<div id="channels"></div>
+				<jsp:include page="addChannel.jsp"></jsp:include>   
+				
 		</td>
             <td class="col-md-8">
                 <h4>Chat</h4>
@@ -53,6 +42,8 @@
             <td class="col-md-2">
                 <h4>Online Users</h4>
 				<div id="onlineUsers"></div>
+				
+				<jsp:include page="addPrivateChannel.jsp"></jsp:include>
             </td>
         </tr>
     </table>
@@ -62,8 +53,8 @@
 			$.get("UserServlet", {"action": "getOnlineUsers"}, function(responseXml) {
 				$("#onlineUsers").html($(responseXml).find("data").html());
 			});
-			$.get("ChannelServlet", {"action": "getPublicChannels"}, function(responseXml) {
-				$("#publicChannels").html($(responseXml).find("data").html());
+			$.get("ChannelServlet", {"action": "getChannels"}, function(responseXml) {
+				$("#channels").html($(responseXml).find("data").html());
 			});
 			$.get("MessageServlet", {"action": "getLatestMessages"}, function(responseXml) {
 				$("#messages").html($(responseXml).find("data").html());
