@@ -46,7 +46,6 @@ public class ChannelServlet extends HttpServlet {
         }
         
         if (request.getAttribute("action") != null) {
-            System.out.println("In ChannelServlet: request attribute = " + request.getAttribute("action"));
 			if (request.getAttribute("action").equals("getChannels")) {
                 List<Channel> publicChannels = channelFacade.getActivePublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
