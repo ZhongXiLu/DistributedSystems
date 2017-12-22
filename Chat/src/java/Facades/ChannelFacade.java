@@ -6,6 +6,7 @@ import EntityClasses.ChatUser;
 import EntityClasses.Message;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +27,9 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 
     @PersistenceContext(unitName = "ChatPU")
     private EntityManager em;
+
+    @EJB
+    private ChatUserFacade chatUserFacade;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -60,10 +64,12 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 			for (ChatUser userInOldChannel : users) {
 				if(!userInOldChannel.equals(user)) {
 					userInOldChannel.setChannelId(em.find(Channel.class, 0));	// first channel = default channel
-				}
+                                        chatUserFacade.edit(userInOldChannel);
+                                }
 			}
 		}
 		user.setChannelId(getChannel(channelName));
+                chatUserFacade.edit(user);
 		return true;
 	}
 	

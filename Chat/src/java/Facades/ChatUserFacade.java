@@ -130,6 +130,5 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         }
         res = sb.toString();
         return res.toUpperCase();
-    }
-    
+    }   
 }
