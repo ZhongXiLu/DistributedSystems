@@ -46,13 +46,13 @@ public class ChannelServlet extends HttpServlet {
         }
         
         if (request.getParameter("action") != null) {
-			if (request.getAttribute("action").equals("getPublicChannels")) {
+			if (request.getAttribute("action").equals("getChannels")) {
                 List<Channel> publicChannels = channelFacade.getActivePublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
 				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
 				Channel myChannel = user.getChannelId();
-                request.setAttribute("myChannel", myChannel.getName());
-				request.getRequestDispatcher("publicChannels.jsp").forward(request, response);
+                request.setAttribute("myChannel", myChannel);
+				request.getRequestDispatcher("channels.jsp").forward(request, response);
 				
 			} else if(request.getAttribute("action").equals("addPublicChannel")) {
 				String channelName = request.getParameter("channelName");
@@ -68,7 +68,7 @@ public class ChannelServlet extends HttpServlet {
 			} else if (request.getAttribute("action").equals("joinChannel")) {
 				String channelName = (String) request.getParameter("channelName");
 				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-				user.setChannelId(channelFacade.getChannel(channelName));  // TODO: Fix this
+				channelFacade.switchChannel(user, channelName);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
 			

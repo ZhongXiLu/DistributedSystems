@@ -48,6 +48,25 @@ public class ChannelFacade extends AbstractFacade<Channel> {
         }
 	}
 	
+	public Boolean switchChannel(ChatUser user, String channelName) {
+		Channel oldChannel = user.getChannelId();
+		if(!oldChannel.getIsPublic()) {
+			// User was in private channel
+			System.out.println("Test");
+			// Make channel inactive
+			oldChannel.setIsActive(false);
+			// Move other User to default channel ("Welcome")
+			Collection<ChatUser> users = oldChannel.getChatUserCollection();
+			for (ChatUser userInOldChannel : users) {
+				if(!userInOldChannel.equals(user)) {
+					userInOldChannel.setChannelId(em.find(Channel.class, 0));	// first channel = default channel
+				}
+			}
+		}
+		user.setChannelId(getChannel(channelName));
+		return true;
+	}
+	
 	// Set channel to inactive (NOT deleting channel in db)
 	public Boolean removeChannel(String name) {
 		TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
@@ -71,14 +90,15 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		return false;
 	}
 	
-	public Boolean addPrivateChannel(String name, ChatUser user1, String user2) {
+	public Boolean addPrivateChannel(String name, ChatUser user1, String user2Name) {
 		if(!checkExists(name)) {
 			Channel newChannel = new Channel(name, false, true);	// new private and active channel
 			
 			user1.setChannelId(newChannel);			
 			TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByName", ChatUser.class);
-			q.setParameter("name", user2);
-			q.getResultList().get(0).setChannelId(newChannel);
+			q.setParameter("name", user2Name);
+			ChatUser user2 = q.getResultList().get(0);
+			user2.setChannelId(newChannel);
 			em.persist(newChannel);
 			return true;
 		}
