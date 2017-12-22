@@ -4,6 +4,6 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <data>
 	<c:forEach items="${messages}" var="message">
-		  <p>${message.getUserId()}: ${message.getContent()}</p>
+		  <p>${message.getUserId().getName()}: ${message.getContent()}</p>
 	</c:forEach>
 </data>

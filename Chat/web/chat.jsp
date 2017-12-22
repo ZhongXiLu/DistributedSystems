@@ -27,7 +27,7 @@
             <td class="col-md-8">
                 <h4>Chat</h4>
 				<div class="panel panel-default">
-				<div class="panel-body" style="height: calc(100vh - 225px); overflow-y: auto;">
+				<div id="messageBox" class="panel-body" style="height: calc(100vh - 225px); overflow-y: auto;">
 					<div id="messages"></div>
 				</div>
 				</div>
@@ -74,10 +74,18 @@
 						message: $("#message").val(),
 					},
 					success: function() {
-						$("#message").val("");
+						$("#message").val("");	// clear input
+						$("#messageBox").scrollTop($("#messageBox")[0].scrollHeight);	// scroll to bottom
 					} 
 				});
 			});
+		});
+		
+		// "Enter" triggers submit
+		$("#message").keyup(function(event) {
+			if(event.keyCode === 13) {
+				$("#sendMessage").click();
+			}
 		});
     </script>
     
