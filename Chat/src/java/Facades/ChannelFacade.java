@@ -61,14 +61,22 @@ public class ChannelFacade extends AbstractFacade<Channel> {
             return true;
         }
     }
-
-    public Boolean addPublicChannel(String name) {
+    
+    private Boolean addChannel(String name, Boolean isPublic) {
         if (!checkExists(name)) {
-            Channel newChannel = new Channel(name, true, true);	// new public and active channel
+            Channel newChannel = new Channel(name, isPublic, true);  // new public and active channel
             em.persist(newChannel);
             return true;
         }
         return false;
+    }
+
+    public Boolean addPublicChannel(String name) {
+        return addChannel(name, true);
+    }
+    
+    public Boolean addPrivateChannel(String name) {
+        return addChannel(name, false);
     }
 
     private boolean checkExists(String name) {
@@ -88,16 +96,28 @@ public class ChannelFacade extends AbstractFacade<Channel> {
         return q.setMaxResults(100).getResultList();
     }
 
+    /*
     public void addMessage(ChatUser user, String message) {
         // TODO: does not work yet
-
+        assert(user != null);
+        assert(message != null);
+        System.out.println(user.getId());
+        System.out.println(user.getName());
         Channel channel = user.getChannelId();
-        Collection<Message> messages = channel.getMessageCollection();
+        
+        System.out.println(channel.getId());
+        System.out.println(channel.getName());
+                
+        Collection<Message> messages = channel.getMessageCollection();           
         Message newMessage = new Message();
         newMessage.setContent(message);
         messages.add(newMessage);
+        
+        em.persist(newMessage);
+        
         System.out.println(newMessage);
         System.out.println(messages);
         channel.setMessageCollection(messages);
     }
+    */
 }

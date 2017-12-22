@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,109 +33,119 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "MESSAGE")
 @XmlRootElement
 @NamedQueries({
-	@NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m")
-	, @NamedQuery(name = "Message.getLatestMessages", query = "SELECT m FROM Message m WHERE m.channelId = :channel ORDER BY m.timestamp ASC")
-	, @NamedQuery(name = "Message.findById", query = "SELECT m FROM Message m WHERE m.id = :id")
-	, @NamedQuery(name = "Message.findByContent", query = "SELECT m FROM Message m WHERE m.content = :content")
-	, @NamedQuery(name = "Message.findByTimestamp", query = "SELECT m FROM Message m WHERE m.timestamp = :timestamp")})
+    @NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m")
+    , @NamedQuery(name = "Message.getLatestMessages", query = "SELECT m FROM Message m WHERE m.channelId = :channel ORDER BY m.timestamp ASC")
+    , @NamedQuery(name = "Message.findById", query = "SELECT m FROM Message m WHERE m.id = :id")
+    , @NamedQuery(name = "Message.findByContent", query = "SELECT m FROM Message m WHERE m.content = :content")
+    , @NamedQuery(name = "Message.findByTimestamp", query = "SELECT m FROM Message m WHERE m.timestamp = :timestamp")})
 public class Message implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	@Id
+    private static final long serialVersionUID = 1L;
+    
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
-	private Integer id;
-	@Size(max = 2000)
+    private Integer id;
+    
+    @Size(max = 2000)
     @Column(name = "CONTENT")
-	private String content;
-	@Basic(optional = false)
+    private String content;
+    
+    @Basic(optional = false)
     @NotNull
     @Column(name = "TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp;
-	@JoinColumn(name = "CHANNEL_ID", referencedColumnName = "ID")
+    private Date timestamp;
+    
+    @JoinColumn(name = "CHANNEL_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-	private Channel channelId;
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+    private Channel channelId;
+    
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-	private ChatUser userId;
+    private ChatUser userId;
 
-	public Message() {
-	}
+    public Message() {
+    }
 
-	public Message(Integer id) {
-		this.id = id;
-	}
+    public Message(Integer id) {
+        this.id = id;
+    }
 
-	public Message(Integer id, Date timestamp) {
-		this.id = id;
-		this.timestamp = timestamp;
-	}
+    public Message(Integer id, Date timestamp) {
+        this.id = id;
+        this.timestamp = timestamp;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    @PrePersist
+    void timestamp() {
+        this.timestamp = new Date();
+    }
+    
+    public Date getTimestamp() {
+        return timestamp;
+    }
+    /*
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }*/
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
+    public Channel getChannelId() {
+        return channelId;
+    }
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
+    public void setChannelId(Channel channelId) {
+        this.channelId = channelId;
+    }
 
-	public Channel getChannelId() {
-		return channelId;
-	}
+    public ChatUser getUserId() {
+        return userId;
+    }
 
-	public void setChannelId(Channel channelId) {
-		this.channelId = channelId;
-	}
+    public void setUserId(ChatUser userId) {
+        this.userId = userId;
+    }
 
-	public ChatUser getUserId() {
-		return userId;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
 
-	public void setUserId(ChatUser userId) {
-		this.userId = userId;
-	}
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Message)) {
+            return false;
+        }
+        Message other = (Message) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (id != null ? id.hashCode() : 0);
-		return hash;
-	}
+    @Override
+    public String toString() {
+        return "EntityClasses.Message[ id=" + id + " ]";
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof Message)) {
-			return false;
-		}
-		Message other = (Message) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "EntityClasses.Message[ id=" + id + " ]";
-	}
-	
 }
