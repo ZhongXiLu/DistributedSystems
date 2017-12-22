@@ -71,6 +71,14 @@ public class ChannelServlet extends HttpServlet {
 				user.setChannelId(channelFacade.getChannel(channelName));  // TODO: Fix this
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
+			
+			else if (request.getAttribute("action").equals("createPrivateChannel")) {
+				String channelName = request.getParameter("privateChannelName");
+				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				String otherUser = (String) request.getParameter("user");
+				channelFacade.addPrivateChannel(channelName, user, otherUser);
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
+			}
         }
 	}
 

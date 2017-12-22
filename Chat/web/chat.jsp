@@ -53,6 +53,8 @@
             <td class="col-md-2">
                 <h4>Online Users</h4>
 				<div id="onlineUsers"></div>
+				
+				<jsp:include page="addPrivateChannel.jsp"></jsp:include>
             </td>
         </tr>
     </table>

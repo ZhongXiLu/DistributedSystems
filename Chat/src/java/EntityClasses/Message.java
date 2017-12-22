@@ -71,6 +71,12 @@ public class Message implements Serializable {
 		this.id = id;
 		this.timestamp = timestamp;
 	}
+	
+	public Message(String content, Channel channel, ChatUser user) {
+		this.content = content;
+		this.channelId = channel;
+		this.userId = user;
+	}
 
 	public Integer getId() {
 		return id;
