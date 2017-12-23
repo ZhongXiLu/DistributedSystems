@@ -125,11 +125,5 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		TypedQuery<Channel> q = em.createNamedQuery("Channel.activePublic", Channel.class);
 		return q.getResultList();
 	}
-	
-	public List<Message> getLatestMessagesOfChannel(Channel channel) {
-		TypedQuery<Message> q = em.createNamedQuery("Message.getLatestMessages", Message.class);
-		q.setParameter("channel", channel);
-		return q.setMaxResults(100).getResultList();
-	}
 
 }

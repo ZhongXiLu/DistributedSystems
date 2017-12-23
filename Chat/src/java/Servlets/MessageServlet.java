@@ -7,11 +7,13 @@ package Servlets;
 
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
+import EntityClasses.Message;
 import Facades.ChannelFacade;
 import Facades.ChatUserFacade;
 import Facades.MessageFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,8 +55,15 @@ public class MessageServlet extends HttpServlet {
 				// TODO: Before login: User == null
 				String username = (String) request.getSession().getAttribute("username");
 				Channel myChannel = chatUserFacade.getChannelOfUser(username);
-                request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel));
+                request.setAttribute("messages", messageFacade.getLatestMessagesOfChannel(myChannel));
                 request.getRequestDispatcher("messages.jsp").forward(request, response);
+				
+			} else if (request.getAttribute("action").equals("getUserInfo")) {
+				String username = (String) request.getParameter("user");
+				List<Message> messages = messageFacade.getLatestMessagesOfUser(chatUserFacade.getChatUser(username));
+				request.setAttribute("username", username);
+				request.setAttribute("messages", messages);
+				request.getRequestDispatcher("userProfile.jsp").forward(request, response);
 
             } else if (request.getAttribute("action").equals("sendMessage")) {
                 HttpSession session = request.getSession(false);

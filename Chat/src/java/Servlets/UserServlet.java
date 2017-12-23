@@ -7,6 +7,7 @@ package Servlets;
  */
 import Facades.ChatUserFacade;
 import EntityClasses.ChatUser;
+import EntityClasses.Message;
 import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -43,10 +44,10 @@ public class UserServlet extends HttpServlet {
         }
 
         if (request.getAttribute("action") != null) {
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
 
             if (request.getAttribute("action").equals("register")) {
+				String username = request.getParameter("username");
+				String password = request.getParameter("password");
                 // create new user and log in
                 String repassword = request.getParameter("repassword");
                 if (password.equals(repassword)) {
@@ -67,6 +68,8 @@ public class UserServlet extends HttpServlet {
                 }
 
             } else if (request.getAttribute("action").equals("login")) {
+				String username = request.getParameter("username");
+				String password = request.getParameter("password");
                 boolean success = chatUserFacade.checkAccount(username, password);
                 if (success) {
                     ChatUser user = chatUserFacade.getChatUser(username);
@@ -83,11 +86,12 @@ public class UserServlet extends HttpServlet {
                 session.removeAttribute("user");
                 session.removeAttribute("username");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
+				
             } else if (request.getAttribute("action").equals("getOnlineUsers")) {
                 List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
                 request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
-            }
+			}
         }
     }
 

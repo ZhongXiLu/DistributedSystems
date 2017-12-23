@@ -8,9 +8,11 @@ package Facades;
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
 import EntityClasses.Message;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -38,5 +40,17 @@ public class MessageFacade extends AbstractFacade<Message> {
         newMessage.setChannelId(channel);
         this.create(newMessage);
     }
+	
+	public List<Message> getLatestMessagesOfChannel(Channel channel) {
+		TypedQuery<Message> q = em.createNamedQuery("Message.getLatestMessagesChannel", Message.class);
+		q.setParameter("channel", channel);
+		return q.setMaxResults(100).getResultList();
+	}
+	
+	public List<Message> getLatestMessagesOfUser(ChatUser user) {
+		TypedQuery<Message> q = em.createNamedQuery("Message.getLatestMessagesUser", Message.class);
+		q.setParameter("user", user);
+		return q.setMaxResults(100).getResultList();
+	}
     
 }
