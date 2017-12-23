@@ -53,23 +53,25 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 	}
 	
 	public Boolean switchChannel(ChatUser user, String channelName) {
-		Channel oldChannel = user.getChannelId();
+		Channel oldChannel = chatUserFacade.getChannelOfUser(user.getName());
 		if(!oldChannel.getIsPublic()) {
 			// User was in private channel
-			System.out.println("Test");
+			em.refresh(oldChannel);
 			// Make channel inactive
 			oldChannel.setIsActive(false);
+			this.edit(oldChannel);
 			// Move other User to default channel ("Welcome")
 			Collection<ChatUser> users = oldChannel.getChatUserCollection();
 			for (ChatUser userInOldChannel : users) {
 				if(!userInOldChannel.equals(user)) {
-					userInOldChannel.setChannelId(em.find(Channel.class, 0));	// first channel = default channel
-                                        chatUserFacade.edit(userInOldChannel);
-                                }
+					userInOldChannel.setChannelId(this.find(1));	// first channel = default channel
+					chatUserFacade.edit(userInOldChannel);
+				}
 			}
 		}
 		user.setChannelId(getChannel(channelName));
-                chatUserFacade.edit(user);
+		user.setIsOnline(true);		// ensure user stays online
+		chatUserFacade.edit(user);
 		return true;
 	}
 	
@@ -90,7 +92,7 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 	public Boolean addPublicChannel(String name) {
 		if(!checkExists(name)) {
 			Channel newChannel = new Channel(name, true, true);	// new public and active channel
-			em.persist(newChannel);
+			this.create(newChannel);
 			return true;
 		}
 		return false;
@@ -105,7 +107,9 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 			q.setParameter("name", user2Name);
 			ChatUser user2 = q.getResultList().get(0);
 			user2.setChannelId(newChannel);
-			em.persist(newChannel);
+			this.create(newChannel);
+			chatUserFacade.edit(user1);
+			chatUserFacade.edit(user2);
 			return true;
 		}
 		return false;
@@ -127,15 +131,5 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		q.setParameter("channel", channel);
 		return q.setMaxResults(100).getResultList();
 	}
-	/*
-	public void addMessage(ChatUser user, String message) {
-                Channel channel = user.getChannelId();
-		Message newMessage = new Message(message, channel, user);
-		user.getMessageCollection().add(newMessage);
-		channel.getMessageCollection().add(newMessage);
-		em.persist(newMessage);
-		//em.merge(channel);
-                //System.out.println(newMessage);
-	}
-        */
+
 }

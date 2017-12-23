@@ -8,6 +8,7 @@ package Servlets;
 import EntityClasses.Channel;
 import EntityClasses.ChatUser;
 import Facades.ChannelFacade;
+import Facades.ChatUserFacade;
 import Facades.MessageFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "MessageServlet", urlPatterns = {"/MessageServlet"})
 public class MessageServlet extends HttpServlet {
 
+	@EJB
+	private ChatUserFacade chatUserFacade;
     @EJB
     private ChannelFacade channelFacade;
     @EJB
@@ -47,41 +50,20 @@ public class MessageServlet extends HttpServlet {
         }
         if (request.getAttribute("action") != null) {
             if (request.getAttribute("action").equals("getLatestMessages")) {
-                ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-                // TODO: Before login: User == null
-                Channel myChannel = user.getChannelId();
+				// TODO: Before login: User == null
+				String username = (String) request.getSession().getAttribute("username");
+				Channel myChannel = chatUserFacade.getChannelOfUser(username);
                 request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel));
                 request.getRequestDispatcher("messages.jsp").forward(request, response);
 
             } else if (request.getAttribute("action").equals("sendMessage")) {
                 HttpSession session = request.getSession(false);
                 String message = request.getParameter("message");
-                ChatUser user = (ChatUser) session.getAttribute("user");
-                Channel channel = user.getChannelId();
+                ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				Channel channel = chatUserFacade.getChannelOfUser(user.getName());
                 messageFacade.addMessage(message, user, channel);
-                //channelFacade.addMessage(user, message);
-
             }
         }
-        /*
-        if (request.getParameter("action") != null) {
-            //System.out.println("In MessageServlet: " + request.getAttribute("action"));
-            if (request.getAttribute("action").equals("getLatestMessages")) {
-                ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-                // TODO: Before login: User == null
-                Channel myChannel = user.getChannelId();
-                request.setAttribute("messages", channelFacade.getLatestMessagesOfChannel(myChannel));
-                request.getRequestDispatcher("messages.jsp").forward(request, response);
-
-            } else if (request.getAttribute("action").equals("sendMessage")) {
-                HttpSession session = request.getSession(false);
-                String message = request.getParameter("message");
-                ChatUser user = (ChatUser) session.getAttribute("user");
-                Channel channel = user.getChannelId();
-                messageFacade.addMessage(message, user, channel);
-                //channelFacade.addMessage(user, message);
-            }
-        */
         
 	}
 

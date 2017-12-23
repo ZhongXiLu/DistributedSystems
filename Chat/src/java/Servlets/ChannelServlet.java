@@ -9,6 +9,7 @@ package Servlets;
 import Facades.ChannelFacade;
 import EntityClasses.Channel;  // TODO: Remove reference to entityclasses. Replace with calls to Facade instead.
 import EntityClasses.ChatUser;
+import Facades.ChatUserFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/ChannelServlet"})
 public class ChannelServlet extends HttpServlet {
 
+	@EJB
+	private ChatUserFacade chatUserFacade;
 	@EJB
 	private ChannelFacade channelFacade;
 
@@ -49,8 +52,8 @@ public class ChannelServlet extends HttpServlet {
 			if (request.getAttribute("action").equals("getChannels")) {
                 List<Channel> publicChannels = channelFacade.getActivePublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
-				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-				Channel myChannel = user.getChannelId();
+				String username = (String) request.getSession().getAttribute("username");
+				Channel myChannel = chatUserFacade.getChannelOfUser(username);
                 request.setAttribute("myChannel", myChannel);
 				request.getRequestDispatcher("channels.jsp").forward(request, response);
 				
@@ -79,14 +82,7 @@ public class ChannelServlet extends HttpServlet {
 				channelFacade.addPrivateChannel(channelName, user, otherUser);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}
-			
-			else if (request.getAttribute("action").equals("createPrivateChannel")) {
-				String channelName = request.getParameter("privateChannelName");
-				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-				String otherUser = (String) request.getParameter("user");
-				channelFacade.addPrivateChannel(channelName, user, otherUser);
-				request.getRequestDispatcher("chat.jsp").forward(request, response);
-			}
+
         }
 	}
 

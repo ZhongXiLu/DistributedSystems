@@ -50,12 +50,13 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
                 passwordMD5 = byteArrToString(md5.digest());
                 
                 ChatUser u = new ChatUser(name, passwordMD5, true, isModerator);
-                em.persist(u);
+				this.create(u);
 				
 				// Add new user to default channel: 'Welcome'
 				TypedQuery<Channel> q = em.createNamedQuery("Channel.findByName", Channel.class);
 				q.setParameter("name", "Welcome");
 				u.setChannelId(q.getResultList().get(0));
+				this.edit(u);
 				
                 return true;
             } catch(NoSuchAlgorithmException ex) {
@@ -64,11 +65,19 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
         }
         return false;
     }
+	
+	public Channel getChannelOfUser(String username) {
+		ChatUser user = this.getChatUser(username);
+		if(user != null) {
+			return user.getChannelId();
+		}
+		return null;
+	}
     
-    private boolean checkExists(String name) {
-        Query q = em.createNamedQuery("ChatUser.findByName");
-        q.setParameter("name", name);
-        return !(q.getResultList().isEmpty());
+	private boolean checkExists(String name) {
+		Query q = em.createNamedQuery("ChatUser.findByName");
+		q.setParameter("name", name);
+		return !(q.getResultList().isEmpty());
     }
     
     public boolean checkAccount(String username, String password) {
@@ -115,6 +124,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     public void setIsOnline(String username, Boolean online) {
         ChatUser user = getChatUser(username);
         user.setIsOnline(online);
+		this.edit(user);
     }
         
     // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
