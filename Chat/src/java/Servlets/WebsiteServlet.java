@@ -43,7 +43,7 @@ public class WebsiteServlet extends HttpServlet {
             request.setAttribute("link", request.getParameter("link"));
         }
         
-        if(request.getParameter("link") != null) {
+        if(request.getAttribute("link") != null) {
             
             if(request.getAttribute("link").equals("login")) {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
