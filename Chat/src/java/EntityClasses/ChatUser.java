@@ -42,6 +42,11 @@ import javax.xml.bind.annotation.XmlTransient;
 	, @NamedQuery(name = "ChatUser.findByIsModerator", query = "SELECT c FROM ChatUser c WHERE c.isModerator = :isModerator")})
 public class ChatUser implements Serializable {
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "toUser")
+	private Collection<Invite> inviteCollection;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "fromUser")
+	private Collection<Invite> inviteCollection1;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
 	private Collection<Message> messageCollection;
 
@@ -170,5 +175,23 @@ public class ChatUser implements Serializable {
 	public void setMessageCollection(Collection<Message> messageCollection) {
 		this.messageCollection = messageCollection;
 	}
-	
+
+	@XmlTransient
+	public Collection<Invite> getInviteCollection() {
+		return inviteCollection;
+	}
+
+	public void setInviteCollection(Collection<Invite> inviteCollection) {
+		this.inviteCollection = inviteCollection;
+	}
+
+	@XmlTransient
+	public Collection<Invite> getInviteCollection1() {
+		return inviteCollection1;
+	}
+
+	public void setInviteCollection1(Collection<Invite> inviteCollection1) {
+		this.inviteCollection1 = inviteCollection1;
+	}
+
 }

@@ -16,8 +16,8 @@
 				</c:when>
 				<c:otherwise>
 					<button 
-						data-toggle="modal" data-target="#addPrivateChannel" data-user="${user.getName()}"
-						type="button" class="openPrivateChannelModal list-group-item">
+						data-toggle="modal" data-target="#addInvite" data-user="${user.getName()}"
+						type="button" class="openInviteModal list-group-item">
 						${user.getName()}
 						<!--if moderator -->
 						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${user.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a>

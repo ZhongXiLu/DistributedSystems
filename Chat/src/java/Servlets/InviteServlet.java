@@ -1,18 +1,16 @@
-package Servlets;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Servlets;
 
-import Facades.ChannelFacade;
-import EntityClasses.Channel;  // TODO: Remove reference to entityclasses. Replace with calls to Facade instead.
 import EntityClasses.ChatUser;
-import Facades.ChatUserFacade;
+import EntityClasses.Invite;
+import Facades.ChannelFacade;
+import Facades.InviteFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,13 +22,11 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author zhongxilu
  */
-@WebServlet(urlPatterns = {"/ChannelServlet"})
-public class ChannelServlet extends HttpServlet {
+@WebServlet(name = "InviteServlet", urlPatterns = {"/InviteServlet"})
+public class InviteServlet extends HttpServlet {
 
 	@EJB
-	private ChatUserFacade chatUserFacade;
-	@EJB
-	private ChannelFacade channelFacade;
+	private InviteFacade inviteFacade;
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,31 +44,29 @@ public class ChannelServlet extends HttpServlet {
             request.setAttribute("action", request.getParameter("action"));
         }
         
-        if (request.getAttribute("action") != null) {
-			if (request.getAttribute("action").equals("getChannels")) {
-                List<Channel> publicChannels = channelFacade.getActivePublicChannels();
-                request.setAttribute("publicChannels", publicChannels);
-				String username = (String) request.getSession().getAttribute("username");
-				Channel myChannel = chatUserFacade.getChannelOfUser(username);
-                request.setAttribute("myChannel", myChannel);
-				request.getRequestDispatcher("channels.jsp").forward(request, response);
+        if (request.getAttribute("action") != null) {			
+			if (request.getAttribute("action").equals("acceptInvite")) {
+				Integer inviteId = Integer.parseInt(request.getParameter("inviteId"));
+				inviteFacade.acceptInvite(inviteId);
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
 				
-			} else if(request.getAttribute("action").equals("addPublicChannel")) {
+			} else if (request.getAttribute("action").equals("declineInvite")) {
+				Integer inviteId = Integer.parseInt(request.getParameter("inviteId"));
+				inviteFacade.declineInvite(inviteId);
+				request.getRequestDispatcher("chat.jsp").forward(request, response);
+				
+			} else if (request.getAttribute("action").equals("createInvite")) {
 				String channelName = request.getParameter("channelName");
-				Boolean success = channelFacade.addPublicChannel(channelName);
-				// TODO: return error message?
+				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				String otherUser = (String) request.getParameter("user");
+				inviteFacade.addInvite(channelName, user, otherUser);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 				
-			} else if(request.getAttribute("action").equals("deleteChannel")) {
-				String channelName = (String) request.getParameter("channelName");
-				Boolean success = channelFacade.removeChannel(channelName);
-				request.getRequestDispatcher("chat.jsp").forward(request, response);
-			
-			} else if (request.getAttribute("action").equals("joinChannel")) {
-				String channelName = (String) request.getParameter("channelName");
+			} else if (request.getAttribute("action").equals("getOpenInvite")) {
 				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
-				channelFacade.switchChannel(user, channelName);
-				request.getRequestDispatcher("chat.jsp").forward(request, response);
+				Invite invite = inviteFacade.getOpenInvite(user);
+				request.setAttribute("invite", invite);
+				request.getRequestDispatcher("invite.jsp").forward(request, response);
 			}
 
         }
