@@ -98,14 +98,11 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 		return false;
 	}
 	
-	public Boolean addPrivateChannel(String name, ChatUser user1, String user2Name) {
+	public Boolean addPrivateChannel(String name, ChatUser user1, ChatUser user2) {
 		if(!checkExists(name)) {
 			Channel newChannel = new Channel(name, false, true);	// new private and active channel
 			
-			user1.setChannelId(newChannel);			
-			TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByName", ChatUser.class);
-			q.setParameter("name", user2Name);
-			ChatUser user2 = q.getResultList().get(0);
+			user1.setChannelId(newChannel);
 			user2.setChannelId(newChannel);
 			this.create(newChannel);
 			chatUserFacade.edit(user1);

@@ -15,7 +15,7 @@
 <body>
 
     <jsp:include page="navbar.jsp"></jsp:include>
-
+	
     <table class="table">
         <tr>
             <td class="col-md-2">
@@ -42,11 +42,13 @@
                 <h4>Online Users</h4>
 				<div id="onlineUsers"></div>
 				
-				<jsp:include page="addPrivateChannel.jsp"></jsp:include>
+				<jsp:include page="addInvite.jsp"></jsp:include>
             </td>
         </tr>
     </table>
-    
+				
+	<div id="inviteRequest"></div>
+
     <script type="text/javascript">
 		function update() {
 			$.get("UserServlet", {"action": "getOnlineUsers"}, function(responseXml) {
@@ -58,6 +60,12 @@
 			$.get("MessageServlet", {"action": "getLatestMessages"}, function(responseXml) {
 				$("#messages").html($(responseXml).find("data").html());
 			});
+			if(!($("#inviteRequestModal").data('bs.modal') || {}).isShown) {	// check if there's already an invite open on screen
+				$.get("InviteServlet", {"action": "getOpenInvite"}, function(responseXml) {
+					$("#inviteRequest").html(responseXml);
+					$("#inviteRequestModal").modal("show");
+				});
+			}
 			setTimeout(update, 1000);
 		}
 		
