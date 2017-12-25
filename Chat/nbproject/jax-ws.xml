@@ -3,7 +3,7 @@
   <services>
     <service name="LBRegistrationWebService">
       <implementation-class>Registration.LBRegistrationWebService</implementation-class>
-      <wsdl-url>file:/C:/Users/thomas/Documents/NetBeansProjects/ChatLoadBalancer/web/WEB-INF/wsit-LoadBalancer.ServerDiscoverService.xml</wsdl-url>
+      <wsdl-url>H:/Documents/Universiteit 2017-2018/Gedistribueerde systemen/groep_8/ChatLoadBalancer/web/WEB-INF/wsit-LoadBalancer.ServerDiscoverService.xml</wsdl-url>
       <local-wsdl-file>wsit-LoadBalancer.ServerDiscoverService.xml.wsdl</local-wsdl-file>
       <service-name>ServerPollingService</service-name>
       <port-name>ServerDiscoverServicePort</port-name>
