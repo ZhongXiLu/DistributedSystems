@@ -9,6 +9,7 @@ import Facades.ChatUserFacade;
 import EntityClasses.ChatUser;
 import EntityClasses.Message;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -45,41 +46,51 @@ public class UserServlet extends HttpServlet {
 
         if (request.getAttribute("action") != null) {
 
-            if (request.getAttribute("action").equals("register")) {
+			if(request.getAttribute("action").equals("register") || request.getAttribute("action").equals("login")) {
+
 				String username = request.getParameter("username");
 				String password = request.getParameter("password");
-                // create new user and log in
-                String repassword = request.getParameter("repassword");
-                if (password.equals(repassword)) {
-                    boolean isModerator = false;    // TODO: make first user the moderator
-                    boolean success = chatUserFacade.addUser(username, password, isModerator);
-                    if (success) {
-                        ChatUser user = chatUserFacade.getChatUser(username);
-                        createSession(request, user);
-                        request.getRequestDispatcher("index.jsp").forward(request, response);
-                    } else {
-                        request.setAttribute("errorMessage", "Username already exists");
-                        request.getRequestDispatcher("register.jsp").forward(request, response);
-                    }
+				Time initialTime = new Time(0, 0, 0);
+				Integer driftValue = 0;
+				try {
+					initialTime = Time.valueOf(request.getParameter("initialTime") + ":00");
+					driftValue = Integer.valueOf(request.getParameter("driftValue"));	
+				} catch(Exception e) {
+					request.setAttribute("errorMessage", "Initial time or drift value is wrong");
+					request.getRequestDispatcher("login.jsp").forward(request, response);
+				}
+				
+				if (request.getAttribute("action").equals("register")) {
+					// create new user and log in
+					String repassword = request.getParameter("repassword");
+					if (password.equals(repassword)) {
+						boolean success = chatUserFacade.addUser(username, password, false);
+						if (success) {
+							ChatUser user = chatUserFacade.getChatUser(username);
+							createSession(request, user, initialTime, driftValue);
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+						} else {
+							request.setAttribute("errorMessage", "Username already exists");
+							request.getRequestDispatcher("register.jsp").forward(request, response);
+						}
+					} else {
+						request.setAttribute("errorMessage", "Passwords do not match");
+						request.getRequestDispatcher("register.jsp").forward(request, response);
+					}
 
-                } else {
-                    request.setAttribute("errorMessage", "Passwords do not match");
-                    request.getRequestDispatcher("register.jsp").forward(request, response);
-                }
-
-            } else if (request.getAttribute("action").equals("login")) {
-				String username = request.getParameter("username");
-				String password = request.getParameter("password");
-                boolean success = chatUserFacade.checkAccount(username, password);
-                if (success) {
-                    ChatUser user = chatUserFacade.getChatUser(username);
-                    chatUserFacade.setIsOnline(username, true);
-                    createSession(request, user);
-                    request.getRequestDispatcher("index.jsp").forward(request, response);
-                } else {
-                    request.setAttribute("errorMessage", "Username or password is wrong");
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                }
+				} else {
+					boolean success = chatUserFacade.checkAccount(username, password);
+					if (success) {
+						ChatUser user = chatUserFacade.getChatUser(username);
+						chatUserFacade.setIsOnline(username, true);
+						createSession(request, user, initialTime, driftValue);
+						request.getRequestDispatcher("index.jsp").forward(request, response);
+					} else {
+						request.setAttribute("errorMessage", "Username or password is wrong");
+						request.getRequestDispatcher("login.jsp").forward(request, response);
+					}
+				}
+				
             } else if (request.getAttribute("action").equals("logout")) {
                 HttpSession session = request.getSession(false);
                 chatUserFacade.setIsOnline((String) session.getAttribute("username"), false);
@@ -95,9 +106,11 @@ public class UserServlet extends HttpServlet {
         }
     }
 
-    private void createSession(HttpServletRequest request, ChatUser user) {
-        request.getSession().setAttribute("user", user);
+    private void createSession(HttpServletRequest request, ChatUser user, Time initialTime, Integer driftValue) {
+		request.getSession().setAttribute("user", user);
         request.getSession().setAttribute("username", user.getName());
+		request.getSession().setAttribute("initialTime", initialTime);
+		request.getSession().setAttribute("driftValue", driftValue);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

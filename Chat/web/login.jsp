@@ -48,6 +48,14 @@ and open the template in the editor.
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                 <input id="login-password" type="password" class="form-control" name="password" placeholder="Password">
                             </div>
+							<div style="margin-bottom: 25px" class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                <input id="login-password" type="time" class="form-control" name="initialTime" placeholder="Initial Time">
+                            </div>
+							<div style="margin-bottom: 25px" class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i></span>
+                                <input id="login-password" type="number" class="form-control" name="driftValue" placeholder="Drift Value (in sec/min)">
+                            </div>
 
                             <div style="margin-top:10px" class="form-group">                                
                                 <div class="col-sm-12 controls">

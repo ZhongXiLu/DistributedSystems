@@ -57,7 +57,19 @@ and open the template in the editor.
                                     <input id="repassword" type="password" class="form-control" name="repassword">
                                 </div>
                             </div>
-
+							<div class="form-group">
+                                <label for="initialTime" class="col-md-3 control-label">Initial Time</label>
+                                <div class="col-md-9">
+                                    <input id="initialTime" type="time" class="form-control" name="initialTime">
+                                </div>
+                            </div>
+							<div class="form-group">
+                                <label for="driftValue" class="col-md-3 control-label">Drift Value (in sec/min)</label>
+                                <div class="col-md-9">
+                                    <input id="driftValue" type="number" class="form-control" name="driftValue">
+                                </div>
+                            </div>
+							
                             <div class="form-group">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button id="addUser" name="AddUser" class="btn btn-info">Sign Up</button>

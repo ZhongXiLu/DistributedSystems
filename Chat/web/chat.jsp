@@ -10,6 +10,7 @@
 <html>
 <head>
     <jsp:include page="includes.html"></jsp:include>
+
 </head>
 
 <body>
@@ -69,9 +70,23 @@
 			setTimeout(update, 1000);
 		}
 		
+		function refreshTime() {
+			var time = ($("#time").text()).split(':');
+			var date = new Date();
+			date.setHours(time[0]);
+			date.setMinutes(time[1]);
+			date.setSeconds(time[2]);
+			date.setMilliseconds(parseInt(time[3]) + 1000 + (parseInt("${sessionScope.driftValue}")/60)*1000);
+			$("#time").text(date.format("HH:mm:ss:fff"));
+			setTimeout(refreshTime, 1000);
+		}
+		
 		$(document).ready(function() {
-			update();
+			$("#time").text("${sessionScope.initialTime}"+":00");
+			refreshTime();
 			
+			update();
+
 			$("#sendMessage").click(function () {
 				$.ajax({
 					
