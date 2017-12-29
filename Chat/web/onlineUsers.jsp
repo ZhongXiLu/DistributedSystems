@@ -3,29 +3,36 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <data>
-	<ul class="list-group">
+	<table class="table table-hover">
 		<c:forEach items="${onlineUsers}" var="user">
 			<c:choose>
 				<c:when test="${user.getName() == sessionScope.username}">
-					<li class="list-group-item">
-						${user.getName()}
-						<!--if moderator -->
-						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${user.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a>
-						<!--endif-->
-					</li>
+					<tr class="success">
+						<td class="active">
+							${user.getName()}
+						</td>
+						<%--<c:if test="${user.getIsModerator()}">--%>
+						<td><a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${user.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a></td>
+						<%--</c:if>--%>
+					</tr>
 				</c:when>
 				<c:otherwise>
-					<button 
-						data-toggle="modal" data-target="#addInvite" data-user="${user.getName()}"
-						type="button" class="openInviteModal list-group-item">
-						${user.getName()}
-						<!--if moderator -->
-						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${user.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a>
-						<!--endif-->
-					</button>
+					<tr 
+					<c:if test="${user.getIsModerator()}">
+					class="danger"
+					</c:if>
+					>
+						<td 
+							data-toggle="modal" data-target="#addInvite" data-user="${user.getName()}"
+							class="openInviteModal">
+							${user.getName()}
+						</td>
+						<%--<c:if test="${user.getIsModerator()}">--%>
+						<td><a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${user.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a></td>
+						<%--</c:if>--%>
+					</tr>
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
-	  <!--<li style="color:red;" class="list-group-item">User 2</li>-->
-	</ul>
+	</table>
 </data>
