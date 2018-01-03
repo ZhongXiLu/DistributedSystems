@@ -81,9 +81,26 @@
 			setTimeout(refreshTime, 1000);
 		}
 		
+		function syncTime() {
+			// Christian algorithm
+			var startTime = new Date().getTime();
+			$.get("TimeServlet", {"action": "getTime"}, function(responseText) {
+				var rtt = new Date().getTime() - startTime;	// in milliseconds
+				var time = responseText.split(':');
+				var date = new Date();
+				date.setHours(time[0]);
+				date.setMinutes(time[1]);
+				date.setSeconds(time[2]);
+				date.setMilliseconds(parseInt(time[3]) + rtt/2);
+				$("#time").text(date.format("HH:mm:ss:fff"));
+			});
+			setTimeout(syncTime, 10000);	// sync time every 10 seconds
+		}
+		
 		$(document).ready(function() {
 			$("#time").text("${sessionScope.initialTime}"+":00");
 			refreshTime();
+			syncTime();
 			
 			update();
 
