@@ -7,6 +7,7 @@ package EntityClasses;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,7 +20,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -74,6 +78,10 @@ public class ChatUser implements Serializable {
     @NotNull
     @Column(name = "IS_MODERATOR")
 	private Boolean isModerator;
+        @Basic(optional = false)
+    @Column(name = "LAST_ONLINE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastOnline;
 	@JoinColumn(name = "CHANNEL_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
 	private Channel channelId;
@@ -131,6 +139,19 @@ public class ChatUser implements Serializable {
 	public void setIsModerator(Boolean isModerator) {
 		this.isModerator = isModerator;
 	}
+        
+        @PrePersist
+        void lastOnline() {
+            this.lastOnline = new Date();
+        }
+
+        public Date getLastOnline() {
+            return lastOnline;
+        }
+
+        public void setLastOnline(Date lastOnline) {
+            this.lastOnline = lastOnline;
+        }
 
 	public Channel getChannelId() {
 		return channelId;
