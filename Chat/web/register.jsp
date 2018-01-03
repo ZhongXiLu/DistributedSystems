@@ -58,9 +58,9 @@ and open the template in the editor.
                                 </div>
                             </div>
 							<div class="form-group">
-                                <label for="initialTime" class="col-md-3 control-label">Initial Time</label>
+                                <label for="initialTime" class="col-md-3 control-label">Initial Time (HH:mm)</label>
                                 <div class="col-md-9">
-                                    <input id="initialTime" type="time" class="form-control" name="initialTime">
+                                    <input id="initialTime" type="text" class="form-control" name="initialTime">
                                 </div>
                             </div>
 							<div class="form-group">

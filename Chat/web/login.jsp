@@ -50,7 +50,7 @@ and open the template in the editor.
                             </div>
 							<div style="margin-bottom: 25px" class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                <input id="login-password" type="time" class="form-control" name="initialTime" placeholder="Initial Time">
+                                <input id="login-password" type="text" class="form-control" name="initialTime" placeholder="Initial Time (HH:mm)">
                             </div>
 							<div style="margin-bottom: 25px" class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i></span>
