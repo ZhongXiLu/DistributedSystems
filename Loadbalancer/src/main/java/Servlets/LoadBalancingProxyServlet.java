@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpHost;
 
 import org.mitre.dsmiley.httpproxy.ProxyServlet;
 
@@ -45,8 +46,8 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
         }
     }*/
     private List<String> urlList = Arrays.asList(
-            "http://192.168.1.38:8080/Chat",
-            "http://192.168.1.38:8080"
+            "143.129.78.107"
+            ,"143.129.78.108"
     );
 
     private final AtomicInteger nextServerId = new AtomicInteger();
@@ -64,16 +65,18 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
     protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws ServletException, IOException {
         //initialize request attributes from caches if unset by a subclass by this point
-        //servletRequest.setAttribute(ATTR_TARGET_HOST, "http://192.168.1.38:8080");
         try {
             semaphore.acquire(1);
             successfullProxyRequest = false;
             while (!successfullProxyRequest) {
                 String uri = getNextHost();
-                servletRequest.setAttribute(ATTR_TARGET_URI, uri);
+                servletRequest.setAttribute(ATTR_TARGET_URI, "/Chat");
+                HttpHost host = new HttpHost(uri, 8080);
+                servletRequest.setAttribute(ATTR_TARGET_HOST, host);
                 successfullProxyRequest = true;
                 super.service(servletRequest, servletResponse);
             }
+            
             System.out.println("ATTR_TARGET_URI: " + servletRequest.getAttribute(ATTR_TARGET_URI));
             System.out.println("ATTR_TARGET_HOST: " + servletRequest.getAttribute(ATTR_TARGET_HOST));
         } catch (InterruptedException e) {
