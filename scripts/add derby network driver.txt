@@ -1,0 +1,9 @@
+Services
+-> Databases
+-> Java DB
+-> Drivers
+-> right click (add driver)
+-> Add Driver File(s)
+-> /usr/lib/jvm/java-8-oracle/db/lib/derbyclient.jar
+-> OK
+-> remove embedded driver
