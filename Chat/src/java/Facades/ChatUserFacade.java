@@ -7,6 +7,7 @@ import EntityClasses.ChatUser;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -124,7 +125,40 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     public void setIsOnline(String username, Boolean online) {
         ChatUser user = getChatUser(username);
         user.setIsOnline(online);
-		this.edit(user);
+        
+        if(online) {
+            // user wants to log in
+            
+            TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.findByIsModerator", ChatUser.class);
+            q.setParameter("isModerator", true);
+            List<ChatUser> mods = q.getResultList();
+            if(mods.isEmpty()) {
+               // no one is moderator yet -> make this user mod
+               user.setIsModerator(true);
+            }
+            
+        } else {
+            // user wants to log out
+            if(user.getIsModerator()) {
+                TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.onlineUsers", ChatUser.class);
+                List<ChatUser> onlineUsers = q.getResultList();
+                if(!onlineUsers.isEmpty()) {
+                    // choose new mod
+                    onlineUsers.get(0).setIsModerator(true);
+                    this.edit(onlineUsers.get(0));
+                }
+                
+                user.setIsModerator(false);
+            }
+        }
+        
+        this.edit(user);
+    }
+    
+    public void refreshUser(String username) {
+        ChatUser user = getChatUser(username);
+        user.setLastOnline(new Date());
+        this.edit(user);
     }
         
     // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
