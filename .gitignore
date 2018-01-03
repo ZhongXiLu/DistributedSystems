@@ -14,3 +14,6 @@ Chat/.nb-gradle/
 /Chat-2/dist/
 /Chat-2/build/
 /Loadbalancer/target/
+/ChatDB/nbproject/private/
+/ChatDB/build/
+/ChatDB/dist/
