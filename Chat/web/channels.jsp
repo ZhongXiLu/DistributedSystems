@@ -16,9 +16,9 @@
 			
 	<h4>
 		Public Channels
-		<%--<c:if test="${user.getIsModerator()}">--%>
+		<c:if test="${user.getIsModerator()}">
 			<a data-toggle="modal" data-target="#addChannel"><span class="glyphicon glyphicon-plus"></span></a>
-		<%--</c:if>--%>
+		</c:if>
 	</h4>
 	
 	<table class="table table-hover">
@@ -29,11 +29,11 @@
 						<td onclick="location.href='ChannelServlet?action=joinChannel&amp;channelName=${channel.getName()}'">
 							${myChannel.getName()}
 						</td>
-						<%--<c:if test="${user.getIsModerator()}">--%>
+						<c:if test="${user.getIsModerator()}">
 							<td>
 								<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
 							</td>
-						<%--</c:if>--%>
+						</c:if>
 					</tr>
 				</c:when>
 				<c:otherwise>
@@ -41,11 +41,11 @@
 						<td onclick="location.href='ChannelServlet?action=joinChannel&amp;channelName=${channel.getName()}'">
 							${channel.getName()}
 						</td>
-						<%--<c:if test="${user.getIsModerator()}">--%>
+						<c:if test="${user.getIsModerator()}">
 							<td>
 								<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
 							</td>
-						<%--</c:if>--%>
+						</c:if>
 					</tr>
 				</c:otherwise>
 			</c:choose>

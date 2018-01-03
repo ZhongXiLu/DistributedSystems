@@ -116,6 +116,7 @@ public class UserServlet extends HttpServlet {
             } else if (request.getAttribute("action").equals("getOnlineUsers")) {
                 chatUserFacade.refreshUser((String) request.getSession().getAttribute("username"));
                 List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
+				request.getSession().setAttribute("user", chatUserFacade.getChatUser((String) request.getSession().getAttribute("username")));
                 request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
 			}
