@@ -76,9 +76,9 @@
 			date.setHours(time[0]);
 			date.setMinutes(time[1]);
 			date.setSeconds(time[2]);
-			date.setMilliseconds(parseInt(time[3]) + 1000 + (parseInt("${sessionScope.driftValue}")/60)*1000);
+			date.setMilliseconds(parseInt(time[3]) + 100 + (parseInt("${sessionScope.driftValue}")/60)*100);
 			$("#time").text(date.format("HH:mm:ss:fff"));
-			setTimeout(refreshTime, 1000);
+			setTimeout(refreshTime, 100);
 		}
 		
 		function syncTime() {

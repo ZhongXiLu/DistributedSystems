@@ -158,9 +158,10 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
             }
 			
 			// check if user was in private channel
-			channelFacade.switchChannel(user, "Welcome");
+			if(!user.getChannelId().getIsPublic()) {
+				channelFacade.switchChannel(user, "Welcome");
+			}
         }
-        
         this.edit(user);
     }
     

@@ -70,7 +70,6 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 			}
 		}
 		user.setChannelId(getChannel(channelName));
-		user.setIsOnline(true);		// ensure user stays online
 		chatUserFacade.edit(user);
 		return true;
 	}

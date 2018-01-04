@@ -80,6 +80,7 @@ public class UserServlet extends HttpServlet {
 						if (password.equals(repassword)) {
 							boolean success = chatUserFacade.addUser(username, password, false);
 							if (success) {
+								chatUserFacade.setIsOnline(username, true);
 								ChatUser user = chatUserFacade.getChatUser(username);
 								createSession(request, user, initialTime, driftValue);
 								request.getRequestDispatcher("index.jsp").forward(request, response);
