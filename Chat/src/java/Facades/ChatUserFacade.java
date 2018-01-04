@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,6 +28,9 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 public class ChatUserFacade extends AbstractFacade<ChatUser> {
+
+	@EJB
+	private ChannelFacade channelFacade;
 
     @PersistenceContext(unitName = "ChatPU")
     private EntityManager em;
@@ -139,6 +143,8 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
             
         } else {
             // user wants to log out
+			
+			// check if user was a mod
             if(user.getIsModerator()) {
                 TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.onlineUsers", ChatUser.class);
                 List<ChatUser> onlineUsers = q.getResultList();
@@ -150,6 +156,9 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
                 
                 user.setIsModerator(false);
             }
+			
+			// check if user was in private channel
+			channelFacade.switchChannel(user, "Welcome");
         }
         
         this.edit(user);

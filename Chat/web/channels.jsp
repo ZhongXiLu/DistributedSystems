@@ -29,11 +29,11 @@
 						<td onclick="location.href='ChannelServlet?action=joinChannel&amp;channelName=${channel.getName()}'">
 							${myChannel.getName()}
 						</td>
-						<c:if test="${user.getIsModerator()}">
-							<td>
-								<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
-							</td>
+						<td>
+						<c:if test="${user.getIsModerator() && channel.getName() != 'Welcome'}">
+							<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
 						</c:if>
+						</td>
 					</tr>
 				</c:when>
 				<c:otherwise>
@@ -41,11 +41,11 @@
 						<td onclick="location.href='ChannelServlet?action=joinChannel&amp;channelName=${channel.getName()}'">
 							${channel.getName()}
 						</td>
-						<c:if test="${user.getIsModerator()}">
-							<td>
-								<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
-							</td>
+						<td>
+						<c:if test="${user.getIsModerator() && channel.getName() != 'Welcome'}">
+							<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove"></span></a>
 						</c:if>
+						</td>
 					</tr>
 				</c:otherwise>
 			</c:choose>
