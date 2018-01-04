@@ -17,3 +17,6 @@ Chat/.nb-gradle/
 /ChatDB/nbproject/private/
 /ChatDB/build/
 /ChatDB/dist/
+
+*.log
+*.aux
