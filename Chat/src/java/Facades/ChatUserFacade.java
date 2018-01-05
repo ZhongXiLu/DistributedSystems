@@ -168,6 +168,7 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     public void refreshUser(String username) {
         ChatUser user = getChatUser(username);
         user.setLastOnline(new Date());
+		user.setIsOnline(true);		// if user came back from timeout -> set back online
         this.edit(user);
     }
         
