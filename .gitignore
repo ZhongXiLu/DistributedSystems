@@ -9,9 +9,6 @@ Chat/.nb-gradle/
 /ChatLoadBalancer/dist/
 /ChatLoadBalancer/nbproject/private/
 
-/Chat-2/
-/Chat-2/nbproject/private/
-/Chat-2/dist/
 /Chat-2/build/
 /Loadbalancer/target/
 /ChatDB/nbproject/private/
@@ -20,3 +17,8 @@ Chat/.nb-gradle/
 
 *.log
 *.aux
+/ChatPersistence/nbproject/private/
+/ChatModelLib/nbproject/private/
+/ChatModelLib/dist/
+/ChatModelLib/build/
+/ChatPersistence/build/

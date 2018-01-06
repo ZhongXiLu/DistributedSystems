@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/Users/thomas/Documents/NetBeansProjects/ChatLoadBalancer/web/WEB-INF/wsit-LoadBalancer.ServerDiscoverService.xml" uri="src/conf/xml-resources/web-services/LBRegistrationWebService/wsdl/wsit-LoadBalancer.ServerDiscoverService.xml.wsdl"/>
+</catalog>
