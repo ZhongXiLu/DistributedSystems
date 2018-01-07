@@ -40,6 +40,7 @@ public class TimeServlet extends HttpServlet {
 		}
 
 		if(request.getAttribute("action") != null) {
+			System.out.println("Received Request " + request.getRequestURL() + ": " + request.getAttribute("action"));
 
 			if(request.getAttribute("action").equals("getTime")) {
 				Calendar cal = Calendar.getInstance();

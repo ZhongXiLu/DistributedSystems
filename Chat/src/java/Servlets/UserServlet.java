@@ -45,6 +45,8 @@ public class UserServlet extends HttpServlet {
         }
 
         if (request.getAttribute("action") != null) {
+			
+			System.out.println("Received Request " + request.getRequestURL() + ": " + request.getAttribute("action"));
 
 			if(request.getAttribute("action").equals("register") || request.getAttribute("action").equals("login")) {
 

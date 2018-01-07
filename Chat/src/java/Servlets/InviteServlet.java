@@ -44,7 +44,9 @@ public class InviteServlet extends HttpServlet {
             request.setAttribute("action", request.getParameter("action"));
         }
         
-        if (request.getAttribute("action") != null) {			
+        if (request.getAttribute("action") != null) {
+			System.out.println("Received Request " + request.getRequestURL() + ": " + request.getAttribute("action"));
+
 			if (request.getAttribute("action").equals("acceptInvite")) {
 				Integer inviteId = Integer.parseInt(request.getParameter("inviteId"));
 				inviteFacade.acceptInvite(inviteId);
