@@ -1,1 +1,1 @@
-READ ME
+Manual can be found at "manual/manual.pdf"
