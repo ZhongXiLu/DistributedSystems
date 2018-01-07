@@ -22,3 +22,7 @@ Chat/.nb-gradle/
 /ChatModelLib/dist/
 /ChatModelLib/build/
 /ChatPersistence/build/
+/ChatPersistence/dist/
+/Chat-3/nbproject/private/
+/Chat-3/build/
+/Chat-3/dist/

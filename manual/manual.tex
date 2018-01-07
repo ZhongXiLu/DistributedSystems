@@ -25,12 +25,102 @@
 	\item Servlets, Beans, Entity Classes
 	\item GlassFish Server
 	\item JavaDB
+	\item socat
+	\item Netbeans
 \end{itemize}
 
 \section{Set up}
 
-TODO
+\subsection{Set up database server}
+\begin{enumerate}
+	\item Open Netbeans
+	\item Open the Services tab
+	\item Expand 'Databases'
+	\item Right click 'Java DB' and select 'Create Database...'
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=50mm]{select_create_db.png}
+	\end{figure}
+	\item Enter the following:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=50mm]{select_create_db2.png}
+	\end{figure}
+	With the password being "chat" and click 'OK'
 
+	\item Open a terminal and cd to \texttt{'groep\_8/socat'}
+	\item Set execute permissions on \texttt{socat/build\_socat} (\texttt{chmod +x build\_socat.sh})
+	\item Run \texttt{./build\_socat.sh} (socat will run after it is compiled. socat needs to be running to access the database from a remote server.)
+\end{enumerate}
+
+\subsection{Set up client servers}
+\subsubsection{For each server}
+\begin{enumerate}
+	\item Open Netbeans
+	\item Open the Chat project by selecting 'File' $\rightarrow$ 'Open Project...'
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=40mm]{open_project.png}
+	\end{figure}
+	then find the location of the Chat project (\texttt{groep\_8/Chat})
+	\item Open the Services tab
+	\item Right click 'Databases' and select 'New Connection...'
+	\item Select the 'Java DB (Network)' driver and click 'Next'
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=45mm]{select_db_driver.png}
+	\end{figure}
+	\item Enter the following:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=50mm]{new_db_connection.png}
+	\end{figure}
+	With 'Database server IP address' the IP address of the server on which the database is running and as Password 'chat'. Then click 'Finish'
+	
+
+	
+	\item Open the Projects tab
+	\item Expand 'Chat'
+	\item Expand 'Configuration Files'
+	\item Open \texttt{glassfish-resources.xml}
+	\item Enter the IP address of the database server in the following locations in \texttt{glassfish-resources.xml}:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=70mm]{enter_db_ip_gf_resources.png}
+	\end{figure}
+	\item Right click on the 'Chat' project and click 'Deploy'
+\end{enumerate}
+\subsubsection{On only one client server}
+\begin{enumerate}
+	\item Open the \texttt{create\_tables.sql} file by selecting 'File' $\rightarrow$ 'Open Project...'
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=40mm]{open_file.png}
+	\end{figure}
+	then open the location of the \texttt{create\_tables.sql} file (\texttt{groep\_8/db/create\_tables.sql})
+	\item Right click in the file and select 'Run File'.
+	\item Select the newly created database connection and click 'OK'.
+\end{enumerate}
+
+\subsection{Set up load balancer}
+\begin{enumerate}
+	\item Copy the maven repository to the right location:
+	\begin{enumerate}
+		\item \texttt{$\sim$: mkdir .m2}
+		\item \texttt{$\sim$: cp -a groep\_8/maven\_repo/. $\sim$/.m2 }
+	\end{enumerate}
+	\item Open the Loadbalancer project in Netbeans
+	\item Open the Projects tab
+	\item Expand 'Loadbalancer' $\rightarrow$ 'Source Packages' $\rightarrow$ 'Servlets'
+	\item Open the 'LoadBalancingProxyServlet.java' file
+	\item Change the IP addresses in the 'LoadBalancingProxyServlet.java' file to the IP addresses of the servers running the Chat application
+	\begin{figure}[H]
+		\centering
+		\includegraphics[height=30mm]{set_server_ip_addresses.png}
+	\end{figure}
+	\item Deploy the Loadbalancer the same way as we did the Chat applications.
+\end{enumerate}
+If everything went right, the load balanced Chat application is accessible at \texttt{\{IP address of load balancer server\}:8080/Loadbalancer}
 \section{Architecture}
 
 \begin{figure}[H]

@@ -1,0 +1,36 @@
+To create the database (on the database server):
+In Netbeans:
+Go to Services
+Expand Databases
+Right click 'Java DB' and select 'Create Database...'
+Enter the following:
+Database Name: chat
+User Name: chat
+Password: chat
+Click 'OK'
+
+set execute permissions on socat/build_socat (chmod +x build_socat.sh)
+run ./build_socat.sh (socat will run after it is compiled)
+
+
+To connect to the database (on the client servers):
+In Netbeans:
+Go to Services
+Right click Databases and select 'New Connection...'
+As driver select 'Java DB (Network)' and click next
+The Driver Name should be 'Java DB (Network)'.
+Enter the following:
+Host: IP address of the database server
+Port: 1528
+Database: chat
+User Name: chat
+Password: chat
+Click Finish
+
+Go to Projects
+Expand Chat
+Expand Configuration Files
+Open glassfish-resources.xml
+Change the following values:
+<property name="serverName" value="IP address of the database server"/>
+<property name="URL" value="jdbc:derby://192.168.1.53:1528/chat"/>
