@@ -6,15 +6,19 @@
 package Servlets;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpHost;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 
 import org.mitre.dsmiley.httpproxy.ProxyServlet;
 
@@ -24,41 +28,30 @@ import org.mitre.dsmiley.httpproxy.ProxyServlet;
  */
 public class LoadBalancingProxyServlet extends ProxyServlet {
 
-    /*class ListedServer {
-
-        private String url;
-        private int coolDown;
-
-        ListedServer(String serverUrl) {
-            url = serverUrl;
-            coolDown = 0;
-        }
-
-        public String getUrl() {
-            
-            return url;
-        }
-        public boolean isAvailable() {
-            return coolDown == 0;
-        }
-        public void setOffline() {
-            
-        }
-    }*/
-    private List<String> urlList = Arrays.asList(
-            "143.129.78.107"
-            ,"143.129.78.108"
+    private final List<String> urlList = Arrays.asList(
+            "192.168.1.54",
+             "192.168.1.68"
     );
 
     private final AtomicInteger nextServerId = new AtomicInteger();
 
     private final Semaphore semaphore = new Semaphore(1, true);
-    
+
     private boolean successfullProxyRequest;
-    
+
     private String getNextHost() {
         String result = urlList.get(nextServerId.getAndIncrement() % urlList.size());
         return result;
+    }
+
+    @Override
+    protected RequestConfig buildRequestConfig() {
+        RequestConfig.Builder builder = RequestConfig.custom()
+                .setRedirectsEnabled(false)//doHandleRedirects)
+                .setCookieSpec(CookieSpecs.IGNORE_COOKIES) // we handle them in the servlet instead
+                .setConnectTimeout(500)
+                .setSocketTimeout(500);
+        return builder.build();
     }
 
     @Override
@@ -68,15 +61,26 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
         try {
             semaphore.acquire(1);
             successfullProxyRequest = false;
-            while (!successfullProxyRequest) {
-                String uri = getNextHost();
+            int nrRequestsMade = 0;
+            while (!successfullProxyRequest && nrRequestsMade < urlList.size() + 1) {
+                String ip = getNextHost();
                 servletRequest.setAttribute(ATTR_TARGET_URI, "/Chat");
-                HttpHost host = new HttpHost(uri, 8080);
+                HttpHost host = new HttpHost(ip, 8080);
                 servletRequest.setAttribute(ATTR_TARGET_HOST, host);
                 successfullProxyRequest = true;
-                super.service(servletRequest, servletResponse);
+                //HttpServletRequest newServletRequest = new HttpServletRequestWrapper(servletRequest);
+                try {
+                    super.service(servletRequest, servletResponse);
+                } catch (SocketTimeoutException e) {
+                    successfullProxyRequest = false;
+                }
+                nrRequestsMade += 1;
+                if (servletResponse.getStatus() >= 400) {
+                    successfullProxyRequest = false;
+                }
+                
             }
-            
+
             System.out.println("ATTR_TARGET_URI: " + servletRequest.getAttribute(ATTR_TARGET_URI));
             System.out.println("ATTR_TARGET_HOST: " + servletRequest.getAttribute(ATTR_TARGET_HOST));
         } catch (InterruptedException e) {
