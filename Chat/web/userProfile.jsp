@@ -1,3 +1,4 @@
+<%@page import="EntityClasses.ChatUser"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -7,8 +8,18 @@
 </head>
 
 <body>
-
-    <jsp:include page="navbar.jsp"></jsp:include>
+	
+	<% ChatUser user = (ChatUser) session.getAttribute("user"); %>
+	<%
+		// Redirect to login if not logged in
+		if(user == null) {
+			response.sendRedirect("WebsiteServlet?link=login");
+		} else {
+			if(!user.getIsModerator()) {
+				response.sendRedirect("WebsiteServlet?link=chat");
+			}
+		}
+	%>
 
 	<div class="container-fluid">
 
