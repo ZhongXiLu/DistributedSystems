@@ -51,6 +51,8 @@ public class MessageServlet extends HttpServlet {
             request.setAttribute("action", request.getParameter("action"));
         }
         if (request.getAttribute("action") != null) {
+			System.out.println("Received Request " + request.getRequestURL() + ": " + request.getAttribute("action"));
+
             if (request.getAttribute("action").equals("getLatestMessages")) {
 				// TODO: Before login: User == null
 				String username = (String) request.getSession().getAttribute("username");
