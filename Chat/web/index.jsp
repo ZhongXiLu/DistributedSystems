@@ -4,6 +4,7 @@
     Author     : zhongxilu
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="EntityClasses.ChatUser"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -18,14 +19,14 @@
         <jsp:include page="navbar.jsp"></jsp:include>
 
         <% ChatUser user = (ChatUser)session.getAttribute("user"); %>
-        <%
-            // Redirect to login if not logged in
-            if(user == null) {
-                response.sendRedirect("WebsiteServlet?link=login");
-            } else {
-                response.sendRedirect("WebsiteServlet?link=chat");
-            }
-        %>
-        
+        <c:choose>
+            <c:when test="${empty user}">
+                <jsp:forward page="WebsiteServlet?link=login" />
+            </c:when>
+            <c:otherwise>
+                <jsp:forward page="WebsiteServlet?link=chat" />
+            </c:otherwise>
+        </c:choose>
+
     </body>
 </html>

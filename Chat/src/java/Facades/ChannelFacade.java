@@ -83,7 +83,15 @@ public class ChannelFacade extends AbstractFacade<Channel> {
 			// channel doesnt exist...
 			return false;
 		} else {
+			em.refresh(results.get(0));
 			results.get(0).setIsActive(false);
+			// move users from this channel to default channel
+			Collection<ChatUser> users = results.get(0).getChatUserCollection();
+			for (ChatUser user : users) {
+				user.setChannelId(this.find(1));	// first channel = default channel
+				chatUserFacade.edit(user);
+			}
+			this.edit(results.get(0));
 			return true;
 		}
 	}
