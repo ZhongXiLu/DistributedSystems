@@ -9,17 +9,18 @@
 
 <body>
 	
+    <!--Redirect to login if user is not logged in-->
 	<% ChatUser user = (ChatUser) session.getAttribute("user"); %>
-	<%
-		// Redirect to login if not logged in
-		if(user == null) {
-			response.sendRedirect("WebsiteServlet?link=login");
-		} else {
-			if(!user.getIsModerator()) {
-				response.sendRedirect("WebsiteServlet?link=chat");
-			}
-		}
-	%>
+    <c:choose>
+        <c:when test="${empty user}">
+            <jsp:forward page="WebsiteServlet?link=login" />
+        </c:when>
+        <c:otherwise>
+            <c:if test="${!user.getIsModerator()}">
+                <jsp:forward page="WebsiteServlet?link=chat" />
+            </c:if>
+        </c:otherwise>
+    </c:choose>
 
 	<div class="container-fluid">
 

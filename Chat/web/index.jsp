@@ -18,6 +18,7 @@
     <body>
         <jsp:include page="navbar.jsp"></jsp:include>
 
+        <!--Redirect to login if user is not logged in-->
         <% ChatUser user = (ChatUser)session.getAttribute("user"); %>
         <c:choose>
             <c:when test="${empty user}">

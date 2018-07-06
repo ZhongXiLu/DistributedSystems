@@ -17,12 +17,10 @@
 <body>
 
 	<% ChatUser user = (ChatUser) session.getAttribute("user"); %>
-	<%
-		// Redirect to login if not logged in
-		if (user == null) {
-			response.sendRedirect("WebsiteServlet?link=login");
-		}
-	%>
+    <!--Redirect to login if user is not logged in-->
+    <c:if test="${empty user}">
+        <jsp:forward page="WebsiteServlet?link=login" />
+    </c:if>
 	
     <jsp:include page="navbar.jsp"></jsp:include>
 		

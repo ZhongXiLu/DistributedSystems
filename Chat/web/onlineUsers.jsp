@@ -9,29 +9,31 @@
 				<c:when test="${onlineUser.getName() == sessionScope.username}">
 					<tr class="success">
 						<td class="active">
+                            <c:if test="${onlineUser.getIsModerator()}">
+                                <span style="font-size: 16px; margin-right: 5px" class="glyphicon glyphicon-wrench" title="Moderator"></span>
+                            </c:if>
 							${onlineUser.getName()}
 						</td>
 						<td>
 						<c:if test="${user.getIsModerator()}">
-						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a>
+						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign" title="Chat Logs"></span></a>
 						</c:if>
 						</td>
 					</tr>
 				</c:when>
 				<c:otherwise>
-					<tr 
-					<c:if test="${onlineUser.getIsModerator()}">
-					class="danger"
-					</c:if>
-					>
+					<tr>
 						<td 
 							data-toggle="modal" data-target="#addInvite" data-user="${onlineUser.getName()}"
 							class="openInviteModal">
-							${onlineUser.getName()}
+                            <c:if test="${onlineUser.getIsModerator()}">
+                                <span style="font-size: 16px; margin-right: 5px" class="glyphicon glyphicon-wrench" title="Moderator"></span>
+                            </c:if>
+                            ${onlineUser.getName()}
 						</td>
 						<td>
 						<c:if test="${user.getIsModerator()}">
-						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign"></span></a>
+						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign" title="Chat Logs"></span></a>
 						</c:if>
 						</td>
 					</tr>
