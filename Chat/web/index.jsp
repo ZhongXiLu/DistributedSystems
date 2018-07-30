@@ -19,9 +19,8 @@
         <jsp:include page="navbar.jsp"></jsp:include>
 
         <!--Redirect to login if user is not logged in-->
-        <% ChatUser user = (ChatUser)session.getAttribute("user"); %>
         <c:choose>
-            <c:when test="${empty user}">
+            <c:when test="${cookie.username == null}">
                 <jsp:forward page="WebsiteServlet?link=login" />
             </c:when>
             <c:otherwise>

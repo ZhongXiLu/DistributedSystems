@@ -7,13 +7,13 @@ package Servlets;
  */
 import Facades.ChatUserFacade;
 import EntityClasses.ChatUser;
-import EntityClasses.Message;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +28,8 @@ public class UserServlet extends HttpServlet {
 
     @EJB
     private ChatUserFacade chatUserFacade;
+	
+	private CookieManager cookieManager = new CookieManager();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -84,8 +86,9 @@ public class UserServlet extends HttpServlet {
 							if (success) {
 								chatUserFacade.setIsOnline(username, true);
 								ChatUser user = chatUserFacade.getChatUser(username);
-								createSession(request, user, initialTime, driftValue);
-								request.getRequestDispatcher("index.jsp").forward(request, response);
+								cookieManager.createCookie(response, user, initialTime, driftValue);
+//								request.getRequestDispatcher("index.jsp").forward(request, response);
+								response.sendRedirect("index.jsp");
 							} else {
 								request.setAttribute("errorMessage", "Username already exists");
 								request.getRequestDispatcher("register.jsp").forward(request, response);
@@ -100,8 +103,9 @@ public class UserServlet extends HttpServlet {
 						if (success) {
 							ChatUser user = chatUserFacade.getChatUser(username);
 							chatUserFacade.setIsOnline(username, true);
-							createSession(request, user, initialTime, driftValue);
-							request.getRequestDispatcher("index.jsp").forward(request, response);
+							cookieManager.createCookie(response, user, initialTime, driftValue);
+//							request.getRequestDispatcher("index.jsp").forward(request, response);
+							response.sendRedirect("index.jsp");
 						} else {
 							request.setAttribute("errorMessage", "Username or password is wrong");
 							request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -110,28 +114,23 @@ public class UserServlet extends HttpServlet {
 				}
 				
             } else if (request.getAttribute("action").equals("logout")) {
-                HttpSession session = request.getSession(false);
-                chatUserFacade.setIsOnline((String) session.getAttribute("username"), false);
-                session.removeAttribute("user");
-                session.removeAttribute("username");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+                chatUserFacade.setIsOnline(cookieManager.getUsernameFromCookie(request), false);
+                cookieManager.clearCookie(request, response);
+//                request.getRequestDispatcher("index.jsp").forward(request, response);
+				response.sendRedirect("index.jsp");
 				
             } else if (request.getAttribute("action").equals("getOnlineUsers")) {
-                chatUserFacade.refreshUser((String) request.getSession().getAttribute("username"));
+				cookieManager.refreshCookie(request, response, chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request)));
+				
+                chatUserFacade.refreshUser(cookieManager.getUsernameFromCookie(request));
                 List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
-				request.getSession().setAttribute("user", chatUserFacade.getChatUser((String) request.getSession().getAttribute("username")));
+				//request.getSession().setAttribute("user", chatUserFacade.getChatUser((String) request.getSession().getAttribute("username")));
                 request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
 			}
         }
     }
 
-    private void createSession(HttpServletRequest request, ChatUser user, Time initialTime, Integer driftValue) {
-		request.getSession().setAttribute("user", user);
-        request.getSession().setAttribute("username", user.getName());
-		request.getSession().setAttribute("initialTime", initialTime);
-		request.getSession().setAttribute("driftValue", driftValue);
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

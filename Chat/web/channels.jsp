@@ -16,7 +16,7 @@
 			
 	<h4>
 		Public Channels
-		<c:if test="${user.getIsModerator()}">
+		<c:if test="${cookie.isModerator.value}">
 			<a data-toggle="modal" data-target="#addChannel"><span class="glyphicon glyphicon-plus" title="Add Channel"></span></a>
 		</c:if>
 	</h4>
@@ -30,7 +30,7 @@
 							${myChannel.getName()}
 						</td>
 						<td>
-						<c:if test="${user.getIsModerator() && channel.getName() != 'Welcome'}">
+						<c:if test="${cookie.isModerator.value && channel.getName() != 'Welcome'}">
 							<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove" title="Remove Channel"></span></a>
 						</c:if>
 						</td>
@@ -42,7 +42,7 @@
 							${channel.getName()}
 						</td>
 						<td>
-						<c:if test="${user.getIsModerator() && channel.getName() != 'Welcome'}">
+						<c:if test="${cookie.isModerator.value && channel.getName() != 'Welcome'}">
 							<a href="ChannelServlet?action=deleteChannel&amp;channelName=${channel.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-remove" title="Remove Channel"></span></a>
 						</c:if>
 						</td>

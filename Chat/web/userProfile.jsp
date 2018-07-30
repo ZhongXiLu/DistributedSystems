@@ -10,13 +10,12 @@
 <body>
 	
     <!--Redirect to login if user is not logged in-->
-	<% ChatUser user = (ChatUser) session.getAttribute("user"); %>
     <c:choose>
-        <c:when test="${empty user}">
+        <c:when test="${cookie.username == null}">
             <jsp:forward page="WebsiteServlet?link=login" />
         </c:when>
         <c:otherwise>
-            <c:if test="${!user.getIsModerator()}">
+            <c:if test="${!cookie.isModerator.value}">
                 <jsp:forward page="WebsiteServlet?link=chat" />
             </c:if>
         </c:otherwise>

@@ -31,6 +31,8 @@ public class ChannelServlet extends HttpServlet {
 	private ChatUserFacade chatUserFacade;
 	@EJB
 	private ChannelFacade channelFacade;
+	
+	private CookieManager cookieManager = new CookieManager();
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -54,7 +56,7 @@ public class ChannelServlet extends HttpServlet {
 			if (request.getAttribute("action").equals("getChannels")) {
                 List<Channel> publicChannels = channelFacade.getActivePublicChannels();
                 request.setAttribute("publicChannels", publicChannels);
-				String username = (String) request.getSession().getAttribute("username");
+				String username = cookieManager.getUsernameFromCookie(request);
 				Channel myChannel = chatUserFacade.getChannelOfUser(username);
                 request.setAttribute("myChannel", myChannel);
 				request.getRequestDispatcher("channels.jsp").forward(request, response);
@@ -72,7 +74,7 @@ public class ChannelServlet extends HttpServlet {
 			
 			} else if (request.getAttribute("action").equals("joinChannel")) {
 				String channelName = (String) request.getParameter("channelName");
-				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
 				channelFacade.switchChannel(user, channelName);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 			}

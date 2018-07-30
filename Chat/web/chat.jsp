@@ -16,9 +16,8 @@
 
 <body>
 
-	<% ChatUser user = (ChatUser) session.getAttribute("user"); %>
     <!--Redirect to login if user is not logged in-->
-    <c:if test="${empty user}">
+    <c:if test="${cookie.username == null}">
         <jsp:forward page="WebsiteServlet?link=login" />
     </c:if>
 	
@@ -83,7 +82,7 @@
 			date.setHours(time[0]);
 			date.setMinutes(time[1]);
 			date.setSeconds(time[2]);
-			date.setMilliseconds(parseInt(time[3]) + 100 + (parseInt("${sessionScope.driftValue}")/60)*100);
+			date.setMilliseconds(parseInt(time[3]) + 100 + (parseInt("${cookie.driftValue.value}")/60)*100);
 			$("#time").text(date.format("HH:mm:ss:fff"));
 			setTimeout(refreshTime, 100);
 		}
@@ -105,7 +104,7 @@
 		}
 		
 		$(document).ready(function() {
-			$("#time").text("${sessionScope.initialTime}"+":00");
+			$("#time").text("${cookie.initialTime.value}"+":00");
 			refreshTime();
 			syncTime();
 			

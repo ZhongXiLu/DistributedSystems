@@ -8,6 +8,7 @@ package Servlets;
 import EntityClasses.ChatUser;
 import EntityClasses.Invite;
 import Facades.ChannelFacade;
+import Facades.ChatUserFacade;
 import Facades.InviteFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,6 +28,11 @@ public class InviteServlet extends HttpServlet {
 
 	@EJB
 	private InviteFacade inviteFacade;
+	
+	@EJB
+    private ChatUserFacade chatUserFacade;
+	
+	private CookieManager cookieManager = new CookieManager();
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -59,13 +65,13 @@ public class InviteServlet extends HttpServlet {
 				
 			} else if (request.getAttribute("action").equals("createInvite")) {
 				String channelName = request.getParameter("channelName");
-				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
 				String otherUser = (String) request.getParameter("user");
 				inviteFacade.addInvite(channelName, user, otherUser);
 				request.getRequestDispatcher("chat.jsp").forward(request, response);
 				
 			} else if (request.getAttribute("action").equals("getOpenInvite")) {
-				ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+				ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
 				Invite invite = inviteFacade.getOpenInvite(user);
 				request.setAttribute("invite", invite);
 				request.getRequestDispatcher("invite.jsp").forward(request, response);

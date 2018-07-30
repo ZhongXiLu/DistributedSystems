@@ -6,16 +6,16 @@
 	<table class="table table-hover">
 		<c:forEach items="${onlineUsers}" var="onlineUser">
 			<c:choose>
-				<c:when test="${onlineUser.getName() == sessionScope.username}">
+				<c:when test="${onlineUser.getName() == cookie.username.value}">
 					<tr class="success">
 						<td class="active">
-                            <c:if test="${onlineUser.getIsModerator()}">
+                            <c:if test="${cookie.isModerator.value}">
                                 <span style="font-size: 16px; margin-right: 5px" class="glyphicon glyphicon-wrench" title="Moderator"></span>
                             </c:if>
 							${onlineUser.getName()}
 						</td>
 						<td>
-						<c:if test="${user.getIsModerator()}">
+						<c:if test="${cookie.isModerator.value}">
 						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign" title="Chat Logs"></span></a>
 						</c:if>
 						</td>
@@ -32,7 +32,7 @@
                             ${onlineUser.getName()}
 						</td>
 						<td>
-						<c:if test="${user.getIsModerator()}">
+						<c:if test="${cookie.isModerator.value}">
 						<a target="blank" href="MessageServlet?action=getUserInfo&amp;user=${onlineUser.getName()}" style="float: right"><span style="font-size: 16px" class="glyphicon glyphicon-info-sign" title="Chat Logs"></span></a>
 						</c:if>
 						</td>

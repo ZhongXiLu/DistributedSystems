@@ -35,6 +35,8 @@ public class MessageServlet extends HttpServlet {
     private ChannelFacade channelFacade;
     @EJB
     private MessageFacade messageFacade;
+	
+	private CookieManager cookieManager = new CookieManager();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -55,7 +57,7 @@ public class MessageServlet extends HttpServlet {
 
             if (request.getAttribute("action").equals("getLatestMessages")) {
 				// TODO: Before login: User == null
-				String username = (String) request.getSession().getAttribute("username");
+				String username = cookieManager.getUsernameFromCookie(request);
 				Channel myChannel = chatUserFacade.getChannelOfUser(username);
                 request.setAttribute("messages", messageFacade.getLatestMessagesOfChannel(myChannel));
                 request.getRequestDispatcher("messages.jsp").forward(request, response);
@@ -68,9 +70,8 @@ public class MessageServlet extends HttpServlet {
 				request.getRequestDispatcher("userProfile.jsp").forward(request, response);
 
             } else if (request.getAttribute("action").equals("sendMessage")) {
-                HttpSession session = request.getSession(false);
                 String message = request.getParameter("message");
-                ChatUser user = (ChatUser) request.getSession().getAttribute("user");
+                ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
 				Channel channel = chatUserFacade.getChannelOfUser(user.getName());
                 messageFacade.addMessage(message, user, channel);
             }
