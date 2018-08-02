@@ -166,10 +166,16 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     }
     
     public void refreshUser(String username) {
+        System.out.println("refresh user" + username);
         ChatUser user = getChatUser(username);
         user.setLastOnline(new Date());
 		user.setIsOnline(true);		// if user came back from timeout -> set back online
         this.edit(user);
+    }
+    
+    public Date getLastOnline(ChatUser user) {
+        em.refresh(user);
+        return user.getLastOnline();
     }
         
     // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
