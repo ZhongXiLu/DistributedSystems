@@ -7,7 +7,7 @@
         <init-param>
             <param-name>targetUri</param-name>
             <!--param-value>http://143.129.78.107:8080/Chat</param-value-->
-            <param-value>http://www.google.com/</param-value>
+            <param-value>https://github.com/mitre/HTTP-Proxy-Servlet/</param-value>
         </init-param>
         <init-param>
             <param-name>log</param-name>
@@ -28,7 +28,15 @@
         <init-param>
             <param-name>http.protocol.handle-redirects</param-name>
             <param-value>true</param-value>
-        </init-param>      
+        </init-param>
+        <init-param>
+            <param-name>http.socket.timeout</param-name>
+            <param-value>1000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>http.read.timeout</param-name>
+            <param-value>-1</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>proxy</servlet-name>
