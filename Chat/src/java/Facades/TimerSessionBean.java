@@ -42,7 +42,7 @@ public class TimerSessionBean {
             List<ChatUser> onlineUsers = chatUserFacade.getAllOnlineUsers();
             Date currentTime = new Date();
             for (ChatUser user : onlineUsers) {
-                long difference = Math.abs(currentTime.getTime() - chatUserFacade.getLastOnline(user).getTime()) / 1000;		// in seconds
+                long difference = Math.abs(currentTime.getTime() - user.getLastOnline().getTime()) / 1000;		// in seconds
                 //System.out.println("last online: " + user.getName() + " : " + chatUserFacade.getLastOnline(user).getTime());
                 if (difference > 30) {
                     //System.out.println("user is offline: " + user.getName());

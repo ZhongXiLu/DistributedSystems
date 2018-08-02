@@ -117,13 +117,22 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
             // user doesnt exist (or for some reason there's more than one account linked to one name)
             return null;
         } else {
+            em.refresh(results.get(0));
             return results.get(0);
         }
     }
     
     public List<ChatUser> getAllOnlineUsers() {
-        TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.onlineUsers", ChatUser.class);
-        return q.getResultList();
+        if (em != null) {
+            TypedQuery<ChatUser> q = em.createNamedQuery("ChatUser.onlineUsers", ChatUser.class);
+            for(ChatUser user: q.getResultList()) {
+                em.refresh(user);
+            }
+            return q.getResultList();
+        } else {
+            System.out.println("em is null");
+        }
+        return null;
     }
     
     public void setIsOnline(String username, Boolean online) {
@@ -166,16 +175,10 @@ public class ChatUserFacade extends AbstractFacade<ChatUser> {
     }
     
     public void refreshUser(String username) {
-        System.out.println("refresh user" + username);
         ChatUser user = getChatUser(username);
         user.setLastOnline(new Date());
-		user.setIsOnline(true);		// if user came back from timeout -> set back online
+        //user.setIsOnline(true);		// if user came back from timeout -> set back online
         this.edit(user);
-    }
-    
-    public Date getLastOnline(ChatUser user) {
-        em.refresh(user);
-        return user.getLastOnline();
     }
         
     // Source: https://platform.netbeans.org/tutorials/60/nbm-login.html#md5
