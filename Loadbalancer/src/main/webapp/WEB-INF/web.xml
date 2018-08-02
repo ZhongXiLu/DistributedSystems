@@ -6,11 +6,36 @@
         <servlet-class>Servlets.LoadBalancingProxyServlet</servlet-class>
         <init-param>
             <param-name>targetUri</param-name>
-            <param-value>http://143.129.78.107:8080/Chat</param-value>
+            <!--param-value>http://143.129.78.107:8080/Chat</param-value-->
+            <param-value>https://github.com/mitre/HTTP-Proxy-Servlet/</param-value>
         </init-param>
         <init-param>
             <param-name>log</param-name>
             <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forwardip</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>preserveHost</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>preserveCookies</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>http.protocol.handle-redirects</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>http.socket.timeout</param-name>
+            <param-value>1000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>http.read.timeout</param-name>
+            <param-value>-1</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
