@@ -18,15 +18,18 @@
     <body>
         <jsp:include page="navbar.jsp"></jsp:include>
 
-        <!--Redirect to login if user is not logged in-->
-        <c:choose>
-            <c:when test="${cookie.username == null}">
-                <jsp:forward page="WebsiteServlet?link=login" />
-            </c:when>
-            <c:otherwise>
-                <jsp:forward page="WebsiteServlet?link=chat" />
-            </c:otherwise>
-        </c:choose>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Redirect to login if user is not logged in
+                $.get("UserServlet", {"action": "checkLoggedIn"}, function(response) {
+                    if(response == "false") {
+                        window.location = "WebsiteServlet?link=login";
+                    } else {
+                        window.location = "WebsiteServlet?link=chat";
+                    }
+                });
+            });
+        </script>
 
     </body>
 </html>

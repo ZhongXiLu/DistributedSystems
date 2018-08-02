@@ -49,7 +49,12 @@ public class CookieManager {
 	
 	public boolean emptyCookie(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
-		return (cookies.length == 0);
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals("isModerator")) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void clearCookie(HttpServletRequest request, HttpServletResponse response) {

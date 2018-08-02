@@ -9,17 +9,21 @@
 
 <body>
 	
-    <!--Redirect to login if user is not logged in-->
-    <c:choose>
-        <c:when test="${cookie.username == null}">
-            <jsp:forward page="WebsiteServlet?link=login" />
-        </c:when>
-        <c:otherwise>
-            <c:if test="${!cookie.isModerator.value}">
-                <jsp:forward page="WebsiteServlet?link=chat" />
-            </c:if>
-        </c:otherwise>
-    </c:choose>
+    <script type="text/javascript">
+		$(document).ready(function() {
+            // Redirect to login if user is not logged in
+            $.get("UserServlet", {"action": "checkLoggedIn"}, function(response) {
+                if(response == "false") {
+                    window.location = "WebsiteServlet?link=login";
+                }
+			});
+		});
+    </script>
+
+    <!-- Also redirect if the user is not a moderator -->
+    <c:if test="${!cookie.isModerator.value}">
+        <jsp:forward page="WebsiteServlet?link=chat" />
+    </c:if>
 
 	<div class="container-fluid">
 

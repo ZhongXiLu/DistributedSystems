@@ -99,6 +99,7 @@ public class UserServlet extends HttpServlet {
 						}
 
 					} else {
+						// Log In
 						boolean success = chatUserFacade.checkAccount(username, password);
 						if (success) {
 							ChatUser user = chatUserFacade.getChatUser(username);
@@ -116,8 +117,8 @@ public class UserServlet extends HttpServlet {
             } else if (request.getAttribute("action").equals("logout")) {
                 chatUserFacade.setIsOnline(cookieManager.getUsernameFromCookie(request), false);
                 cookieManager.clearCookie(request, response);
-//                request.getRequestDispatcher("index.jsp").forward(request, response);
-				response.sendRedirect("index.jsp");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+//				response.sendRedirect("index.jsp");
 				
             } else if (request.getAttribute("action").equals("getOnlineUsers")) {
 				cookieManager.refreshCookie(request, response, chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request)));
@@ -127,6 +128,22 @@ public class UserServlet extends HttpServlet {
 				//request.getSession().setAttribute("user", chatUserFacade.getChatUser((String) request.getSession().getAttribute("username")));
                 request.setAttribute("onlineUsers", onlineUsers);
                 request.getRequestDispatcher("onlineUsers.jsp").forward(request, response);
+				
+            } else if (request.getAttribute("action").equals("checkLoggedIn")) {
+				if(cookieManager.emptyCookie(request)) {
+					// no cookies are set
+					response.getWriter().write("false");
+				} else {
+					// check if user is actually logged in
+					ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
+					if(user.getIsOnline()) {
+						response.getWriter().write("true");
+					} else {
+						response.getWriter().write("false");
+						// also clear the cookies
+						cookieManager.clearCookie(request, response);
+					}
+				}
 			}
         }
     }

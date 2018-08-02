@@ -15,11 +15,6 @@
 </head>
 
 <body>
-
-    <!--Redirect to login if user is not logged in-->
-    <c:if test="${cookie.username == null}">
-        <jsp:forward page="WebsiteServlet?link=login" />
-    </c:if>
 	
     <jsp:include page="navbar.jsp"></jsp:include>
 		
@@ -104,6 +99,13 @@
 		}
 		
 		$(document).ready(function() {
+            // Redirect to login if user is not logged in
+            $.get("UserServlet", {"action": "checkLoggedIn"}, function(response) {
+                if(response == "false") {
+                    window.location = "WebsiteServlet?link=login";
+                }
+			});
+            
 			$("#time").text("${cookie.initialTime.value}"+":00");
 			refreshTime();
 			syncTime();
