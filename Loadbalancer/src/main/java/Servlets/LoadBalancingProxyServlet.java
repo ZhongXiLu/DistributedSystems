@@ -38,8 +38,9 @@ import org.apache.http.conn.ConnectTimeoutException;
 public class LoadBalancingProxyServlet extends ProxyServlet {
 
     private final List<String> uriList = Arrays.asList(
-            "http://www.google.com/",
-            "http://192.168.1.200/"
+            //"http://143.129.78.104:8080/Chat",
+            "http://143.129.78.103:8080/Chat"//,
+            //"http://143.129.78.102:8080/Chat"
     );
     private final AtomicInteger nextServerId = new AtomicInteger();
 
@@ -153,6 +154,7 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             }
 
         } catch (Exception e) {
+            System.out.println("** Exception: " + e + " **");
             if (e instanceof ConnectTimeoutException) {
                 System.out.println("** Exception happened: ConnectionTimeout **");
                 service(servletRequest, servletResponse);
