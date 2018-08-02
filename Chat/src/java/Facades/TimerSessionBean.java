@@ -35,7 +35,7 @@ public class TimerSessionBean {
                 public void run() {
                     checkOnlineUsers();
                 }
-            }, 0, 30, TimeUnit.SECONDS);    // schedule every 30 seconds
+            }, 0, 10, TimeUnit.SECONDS);    // schedule every 30 seconds
         }
 
         public void checkOnlineUsers() {
@@ -43,7 +43,9 @@ public class TimerSessionBean {
             Date currentTime = new Date();
             for (ChatUser user : onlineUsers) {
                 long difference = Math.abs(currentTime.getTime() - user.getLastOnline().getTime()) / 1000;		// in seconds
+                //System.out.println("last online: " + user.getName() + " : " + chatUserFacade.getLastOnline(user).getTime());
                 if (difference > 30) {
+                    //System.out.println("user is offline: " + user.getName());
                     // no request from this user in the past 30 seconds -> force log out
                     chatUserFacade.setIsOnline(user.getName(), false);
                 }
