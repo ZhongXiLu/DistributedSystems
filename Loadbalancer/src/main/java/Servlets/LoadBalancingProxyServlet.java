@@ -42,10 +42,10 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
 
     private final List<String> uriList = Arrays.asList(
             //"http://143.129.78.104:8080/Chat",
-            //"http://143.129.78.103:8080/Chat"//,
-            //"http://143.129.78.102:8080/Chat"
-            "http://localhost:42858/Chat",
-            "http://localhost:20181/Chat"
+            "http://143.129.78.103:8080/Chat",
+            "http://143.129.78.102:8080/Chat"
+            //"http://localhost:42858/Chat",
+            //"http://localhost:20181/Chat"
     );
 
     private final ConcurrentHashMap<String, Long> uriMap = new ConcurrentHashMap();
@@ -100,17 +100,12 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
     @Override
     protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws ServletException, IOException {
-        targetUri = getNextUri();
-        
-        service(servletRequest, servletResponse, targetUri);
-    }
-
-    protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String targetUri)
-            throws ServletException, IOException {
+        String targetUri = getNextUri();  
 
         if (targetUri == null) {
             throw new ServletException(P_TARGET_URI + " is required.");
         }
+        URI targetUriObj;
         //test it's valid
         try {
             targetUriObj = new URI(targetUri);
@@ -118,22 +113,6 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             throw new ServletException("Trying to process targetUri init parameter: " + e, e);
         }
         HttpHost targetHost = URIUtils.extractHost(targetUriObj);
-        /*
-        //initialize request attributes from caches if unset by a subclass by this point
-        if (servletRequest.getAttribute(ATTR_TARGET_URI) == null) {
-            servletRequest.setAttribute(ATTR_TARGET_URI, targetUri);
-            System.out.println("-- SET TARGET URI --");
-        }
-        else {
-            System.out.println("-- USED URI CACHE --");
-        }
-        if (servletRequest.getAttribute(ATTR_TARGET_HOST) == null) {
-            servletRequest.setAttribute(ATTR_TARGET_HOST, targetHost);
-            System.out.println("-- SET TARGET URL --");
-        }
-        else {
-            System.out.println("-- USED URL CACHE --");
-        }*/
 
         servletRequest.setAttribute(ATTR_TARGET_URI, targetUri);
         servletRequest.setAttribute(ATTR_TARGET_HOST, targetHost);
@@ -190,9 +169,9 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             }
 
             //if (400 <= statusCode && statusCode < 600) {
-            if (statusCode == 404 || statusCode == 500) {
+            /*if (statusCode == 404 || statusCode == 500) {
                 retryService(servletRequest, servletResponse, targetUri, "code " + statusCode);
-            }
+            }*/
 
         } catch (Exception e) {
             System.out.println("* Exception caught: " + e);
@@ -202,13 +181,13 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             } else if (proxyResponse == null) {
                 retryService(servletRequest, servletResponse, targetUri, "ProxyResponse is null");
             } else {
-                int statusCode = proxyResponse.getStatusLine().getStatusCode();
+                /*int statusCode = proxyResponse.getStatusLine().getStatusCode();
                 //if (400 <= statusCode && statusCode < 600) {
                 if (statusCode == 404 || statusCode == 500) {
                     retryService(servletRequest, servletResponse, targetUri, "Exception: code " + statusCode);
                 } else {
-                    handleRequestException(proxyRequest, e);
-                }
+                }*/
+                handleRequestException(proxyRequest, e);
             }
 
             /*if (proxyRequest instanceof AbortableHttpRequest) {
