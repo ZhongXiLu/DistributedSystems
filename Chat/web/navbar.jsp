@@ -25,7 +25,7 @@
 			<a class="navbar-brand" href="WebsiteServlet?link=index">Chat!</a>
 		</div>
 		<c:choose>
-			<c:when test="${cookie.username != null}">
+			<c:when test="${cookie.username != null && cookie.username.value != ''}">
 				<ul class="nav navbar-nav navbar-center">
 					<li><a id="time">00:00:00</a></li>
 				</ul>
