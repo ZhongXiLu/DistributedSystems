@@ -13,7 +13,7 @@
 
 \begin{document}
 \author{Zhong-Xi Lu \& Thomas Van Bogaert}
-\title{\textbf{Distributed Systems} \\ \Large{Chat Manual}}
+\title{\textbf{Distributed Systems} \\ \Large{Chat Architecture \& Manual}}
 \date{}
 \maketitle
 
@@ -27,7 +27,25 @@
 	\item JavaDB
 	\item socat
 	\item Netbeans
+	\item Maven
+	\item HTTP-Proxy-Servlet
 \end{itemize}
+
+\section{Architecture}
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=100mm]{architecture.png}
+\caption{Chat Login Page}
+\end{figure}
+
+This is our service oriented architecture consisting of three layers. In the front-end, we have jsp's that makes requests to the server through the load balancer. The load balancer forwards this request to the appropiate server. Each servlet then makes calls to the facades that is responsible for all the business logic. If a change to the database needs to be done, a facade can rely on an interface of the database (entity classes). This is done by calling the entity manager.
+
+\section{Design Choices}
+
+As previously mentioned, we tried to make a layered architecture (service-oriented). This way, each layer has one responsibility; servlets are responsible for handling requests, facades for doing all the logic, entity classes for the communication with the database. On the front-end, we have jsp's that can easily process all the data received from the server. Furthermore, we make ajax calls to the server, because it's reasonably fast and you can easily manipulate the responses and integrate it in your jsp's. Above that, those calls are asynchronous, which makes it a lot easier to send different requests at roughly the same time.
+
+The load balancer is based on the HTTP-Proxy-Servlet by dsmiley (https://github.com/mitre/HTTP-Proxy-Servlet). We used this as our starting point because it is a functional reverse proxy implementation that is still being maintained. Methods were added to redirect requests to multiple servers in a round-robin fashion and to provide failover should a server fail. When a server fails to return a valid http response, it is added to a blacklist for a certain amount of time.
 
 \section{Set up}
 
@@ -66,6 +84,11 @@
 	\item Open the Services tab
 	\item Right click 'Databases' and select 'New Connection...'
 	\item Select the 'Java DB (Network)' driver and click 'Next'
+	\begin{enumerate}
+		\item If the 'Java DB (Network)' driver is not available, add it to the available drivers by right clicking on Drivers and selecting 'New Driver'.
+		\item Click add and enter '/usr/lib/jvm/java-8-oracle/db/lib/derbyclient.jar'
+		\item Click 'Ok' and then 'Ok'
+	\end{enumerate}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[height=45mm]{select_db_driver.png}
@@ -106,7 +129,7 @@
 \begin{enumerate}
 	\item Copy the maven repository to the right location:
 	\begin{enumerate}
-		\item \texttt{$\sim$: mkdir .m2}
+		\item \texttt{$\sim$: mkdir $\sim$/.m2}
 		\item \texttt{$\sim$: cp -a groep\_8/maven\_repo/. $\sim$/.m2 }
 	\end{enumerate}
 	\item Open the Loadbalancer project in Netbeans
@@ -120,20 +143,7 @@
 	\end{figure}
 	\item Deploy the Loadbalancer the same way as we did the Chat applications.
 \end{enumerate}
-If everything went right, the load balanced Chat application is accessible at \texttt{\{IP address of load balancer server\}:8080/Loadbalancer}
-\section{Architecture}
-
-\begin{figure}[H]
-\centering
-\includegraphics[height=100mm]{architecture.png}
-\caption{Chat Login Page}
-\end{figure}
-
-This is our service oriented architecture. In the front-end, we have jsp's that makes requests to the server through the load balancer. The load balancer forwards this request to the appropiate server/servlet. Each servlet then makes calls to the facades that is responsible for all the business logic. If a change to the database needs to be done, a facade can rely on an interface of the database (entity classes).
-
-\section{Design Choices}
-
-As previously mentioned, we tried to make a layered architecture (service-oriented). This way, each layer has one responsibility; servlets are responsible for handling requests, facades for doing all the logic, entity classes for the communication with the database. On the front-end, we have jsp's that can easily process all the data received from the server. Furthermore, we make ajax calls to the server, because it's reasonably fast and you can easily manipulate the responses and integrate it in your jsp's. Above that, those call are asynchronous, which makes it a lot easier to send different requests at roughly the same time.
+If everything went right, the load balanced Chat application is accessible at \texttt{\{IP address of load balancer server\}:8080}
 
 \section{Chat Tutorial}
 
