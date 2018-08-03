@@ -31,6 +31,9 @@ import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.conn.ConnectTimeoutException;
 
+import java.util.concurrent.ConcurrentHashMap;
+import org.apache.http.conn.HttpHostConnectException;
+
 /**
  *
  * @author thomas
@@ -39,14 +42,49 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
 
     private final List<String> uriList = Arrays.asList(
             //"http://143.129.78.104:8080/Chat",
-            "http://143.129.78.103:8080/Chat"//,
+            //"http://143.129.78.103:8080/Chat"//,
             //"http://143.129.78.102:8080/Chat"
+            "http://localhost:42858/Chat",
+            "http://localhost:20181/Chat"
     );
+
+    private final ConcurrentHashMap<String, Long> uriMap = new ConcurrentHashMap();
+
+    private void populateUriMap() {
+        System.out.println("initTime: " + System.currentTimeMillis());
+        for (String uri : uriList) {
+            uriMap.put(uri, System.currentTimeMillis());
+        }
+    }
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
+        populateUriMap();
+    }
+
     private final AtomicInteger nextServerId = new AtomicInteger();
 
-    private String getNextUri() {
-        String result = uriList.get(nextServerId.getAndIncrement() % uriList.size());
+    private String getNextUri() throws ServletException {
+        String result;
+        int requestCount = 0;
+        do {
+            result = uriList.get(nextServerId.getAndIncrement() % uriList.size());
+            requestCount++;
+            if (requestCount == 150) {
+                throw new ServletException("Max allowed amount of uri requests reached. (" + requestCount + ")");
+            }
+            System.out.println(result + ", " + uriMap.get(result) +", "+ System.currentTimeMillis() + ", " + (uriMap.get(result) - System.currentTimeMillis()));
+        } while (uriMap.get(result) > System.currentTimeMillis());
+        
         return result;
+    }
+
+    private void retryService(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String targetUri, String message) throws ServletException, IOException {
+        System.out.println("Retry: " + message);
+        uriMap.put(targetUri, System.currentTimeMillis() + 10 * 1000);  // Retry server after 10 seconds
+        service(servletRequest, servletResponse);
     }
 
     /*@Override
@@ -66,10 +104,10 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
         
         service(servletRequest, servletResponse, targetUri);
     }
-    
+
     protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse, String targetUri)
-            throws ServletException, IOException {      
-        
+            throws ServletException, IOException {
+
         if (targetUri == null) {
             throw new ServletException(P_TARGET_URI + " is required.");
         }
@@ -80,7 +118,7 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             throw new ServletException("Trying to process targetUri init parameter: " + e, e);
         }
         HttpHost targetHost = URIUtils.extractHost(targetUriObj);
-        
+        /*
         //initialize request attributes from caches if unset by a subclass by this point
         if (servletRequest.getAttribute(ATTR_TARGET_URI) == null) {
             servletRequest.setAttribute(ATTR_TARGET_URI, targetUri);
@@ -95,14 +133,14 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
         }
         else {
             System.out.println("-- USED URL CACHE --");
-        }
-        
+        }*/
+
         servletRequest.setAttribute(ATTR_TARGET_URI, targetUri);
         servletRequest.setAttribute(ATTR_TARGET_HOST, targetHost);
-        
+
         System.out.println("TARGET_URI: " + servletRequest.getAttribute(ATTR_TARGET_URI));
         System.out.println("TARGET_HOST: " + servletRequest.getAttribute(ATTR_TARGET_HOST));
-        
+
         // Make the Request
         //note: we won't transfer the protocol version because I'm not sure it would truly be compatible
         String method = servletRequest.getMethod();
@@ -115,15 +153,13 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
         } else {
             proxyRequest = new BasicHttpRequest(method, proxyRequestUri);
         }
-
+        
         copyRequestHeaders(servletRequest, proxyRequest);
 
         setXForwardedForHeader(servletRequest, proxyRequest);
 
         HttpResponse proxyResponse = null;
         try {
-            System.out.println("doExecuteTargetHost: " + getTargetHost(servletRequest));
-
             // Execute the request
             proxyResponse = doExecute(servletRequest, servletResponse, proxyRequest);
 
@@ -153,8 +189,37 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
                 copyResponseEntity(proxyResponse, servletResponse, proxyRequest, servletRequest);
             }
 
+            //if (400 <= statusCode && statusCode < 600) {
+            if (statusCode == 404 || statusCode == 500) {
+                retryService(servletRequest, servletResponse, targetUri, "code " + statusCode);
+            }
+
         } catch (Exception e) {
-            System.out.println("** Exception: " + e + " **");
+            System.out.println("* Exception caught: " + e);
+
+            if (e instanceof HttpHostConnectException || e instanceof ConnectTimeoutException || e instanceof IOException) {
+                retryService(servletRequest, servletResponse, targetUri, e.toString());
+            } else if (proxyResponse == null) {
+                retryService(servletRequest, servletResponse, targetUri, "ProxyResponse is null");
+            } else {
+                int statusCode = proxyResponse.getStatusLine().getStatusCode();
+                //if (400 <= statusCode && statusCode < 600) {
+                if (statusCode == 404 || statusCode == 500) {
+                    retryService(servletRequest, servletResponse, targetUri, "Exception: code " + statusCode);
+                } else {
+                    handleRequestException(proxyRequest, e);
+                }
+            }
+
+            /*if (proxyRequest instanceof AbortableHttpRequest) {
+                AbortableHttpRequest abortableHttpRequest = (AbortableHttpRequest) proxyRequest;
+                abortableHttpRequest.abort();
+            }*/
+            /*
+            if (e instanceof HttpHostConnectException) {
+                System.out.println("** Exception happened: HttpHostConnectionException **");
+                service(servletRequest, servletResponse);
+            }
             if (e instanceof ConnectTimeoutException) {
                 System.out.println("** Exception happened: ConnectionTimeout **");
                 service(servletRequest, servletResponse);
@@ -166,15 +231,16 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             else {
                 int statusCode = proxyResponse.getStatusLine().getStatusCode();
                 System.out.println("** Exception happened: code " + statusCode + " **");
-                if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
+                //if (statusCode == HttpServletResponse.SC_NOT_FOUND) {
+                if (statusCode >= 400 && statusCode <= 600) {
                     service(servletRequest, servletResponse);
                 }
             }
-            if (proxyRequest instanceof AbortableHttpRequest) {
+            /*if (proxyRequest instanceof AbortableHttpRequest) {
                 AbortableHttpRequest abortableHttpRequest = (AbortableHttpRequest) proxyRequest;
                 abortableHttpRequest.abort();
-            }
-            //handleRequestException(proxyRequest, e);
+            }*/
+            
         } finally {
             // make sure the entire entity was consumed, so the connection is released
             if (proxyResponse != null) {
@@ -184,20 +250,23 @@ public class LoadBalancingProxyServlet extends ProxyServlet {
             // http://stackoverflow.com/questions/1159168/should-one-call-close-on-httpservletresponse-getoutputstream-getwriter
         }
     }
-    
+
     protected void handleRequestException(HttpRequest proxyRequest, Exception e) throws ServletException, IOException {
         //abort request, according to best practice with HttpClient
         if (proxyRequest instanceof AbortableHttpRequest) {
-          AbortableHttpRequest abortableHttpRequest = (AbortableHttpRequest) proxyRequest;
-          abortableHttpRequest.abort();
+            AbortableHttpRequest abortableHttpRequest = (AbortableHttpRequest) proxyRequest;
+            abortableHttpRequest.abort();
         }
-        if (e instanceof RuntimeException)
-          throw (RuntimeException)e;
-        if (e instanceof ServletException)
-          throw (ServletException)e;
+        if (e instanceof RuntimeException) {
+            throw (RuntimeException) e;
+        }
+        if (e instanceof ServletException) {
+            throw (ServletException) e;
+        }
         //noinspection ConstantConditions
-        if (e instanceof IOException)
-          throw (IOException) e;
+        if (e instanceof IOException) {
+            throw (IOException) e;
+        }
         throw new RuntimeException(e);
     }
 
