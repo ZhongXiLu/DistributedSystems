@@ -136,7 +136,7 @@ public class UserServlet extends HttpServlet {
 				} else {
 					// check if user is actually logged in
 					ChatUser user = chatUserFacade.getChatUser(cookieManager.getUsernameFromCookie(request));
-					if(user.getIsOnline()) {
+					if(user != null && user.getIsOnline()) {
 						response.getWriter().write("true");
 					} else {
 						response.getWriter().write("false");
